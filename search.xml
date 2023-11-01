@@ -28,7 +28,7 @@
 </li>
 <li><p>這時候我們會需要API Key，連回至<a href="https://portal.azure.com/">https://portal.azure.com/</a> ，回到本文1~2步驟，選到你的Azure OpenAI服務，接著點選左側「金鑰與端點」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-8.PNG"></p>
 </li>
-<li><p>點選金鑰1或金鑰2複製都可以，複製下來貼上到第6步驟程式碼的<strong>openai.api_key</strong>的值<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-9.PNG"></p>
+<li><p>點選金鑰1或金鑰2複製都可以，複製下來貼上到第7步驟程式碼的<strong>openai.api_key</strong>的值<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-9.PNG"></p>
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line">openai.api_key = <span class="string">&quot;XXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> <span class="comment"># 替換成複製下來的Key</span></span><br></pre></td></tr></table></figure>
 <p>並印出GPT回應內容</p>
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(response.choices[<span class="number">0</span>].message.content)</span><br></pre></td></tr></table></figure>
