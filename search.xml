@@ -28,7 +28,7 @@
 </li>
 <li><p>這時候我們會需要API Key，連回至<a href="https://portal.azure.com/">https://portal.azure.com/</a> ，回到本文1~2步驟，選到你的Azure OpenAI服務，接著點選左側「金鑰與端點」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-8.PNG"></p>
 </li>
-<li><p>點選金鑰1或金鑰2複製都可以，複製下來貼上到第6步驟程式碼的openai.api_key的值<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-9.PNG"></p>
+<li><p>點選金鑰1或金鑰2複製都可以，複製下來貼上到第6步驟程式碼的<strong>openai.api_key</strong>的值<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-9.PNG"></p>
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line">openai.api_key = <span class="string">&quot;XXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> <span class="comment"># 替換成複製下來的Key</span></span><br></pre></td></tr></table></figure>
 <p>並印出GPT回應內容</p>
 <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(response.choices[<span class="number">0</span>].message.content)</span><br></pre></td></tr></table></figure>
@@ -87,40 +87,6 @@
       </tags>
   </entry>
   <entry>
-    <title>探討Javascript的Hoisting</title>
-    <url>/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，這一篇我們來簡單了解一下Hoisting的運作</p>
-<span id="more"></span>
-<hr>
-<h2 id="var變數的Hoisting"><a href="#var變數的Hoisting" class="headerlink" title="var變數的Hoisting"></a>var變數的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>上述結果會印出undefined，為什麼呢？因為這樣寫法等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> x</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line">x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升</p>
-<h2 id="傳統函式的Hoisting"><a href="#傳統函式的Hoisting" class="headerlink" title="傳統函式的Hoisting"></a>傳統函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述結果會印出Hello，因為整個function都會被提升，這樣寫法等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<p>這也就是為什麼在Javascript裡頭將一個函式用function宣告，也能順利執行函式的原因，因為整個function都提升到呼叫語句之前了阿！</p>
-<h2 id="var變數宣告函式的Hoisting"><a href="#var變數宣告函式的Hoisting" class="headerlink" title="var變數宣告函式的Hoisting"></a>var變數宣告函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>會發生錯誤<em>Uncaught TypeError: test is not a function”</em> ，因為這樣的宣告方式等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test</span><br><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line">test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升，所以這邊的test是undefined，自然而然用函式的方式直接呼叫，瀏覽器就報給我們一個錯誤說test不是一個function。所以如果要用變數宣告function的話，務必要用以下的方式</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<p>然後我也會習慣把var改為const方式來宣告，也有點防呆的機制，讓後續的指派變數動作不會誤指派值給這個function，因為我們也很少會把宣告出來的函式重新指派值</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
-<li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
-<li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>探究Vue的watch機制</title>
     <url>/2023/10/27/%E6%8E%A2%E7%A9%B6Vue%E7%9A%84watch%E6%A9%9F%E5%88%B6/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Vue.js我們常常會使用watch來做一些對應處理，例如可以監控某值出現變化的時候，就觸發function去做事情，有時候我們也會需要拿到變化前的值或變化後的值去做利用。此篇我們來探討一下watch機制如何運作</p>
@@ -171,6 +137,40 @@
       <tags>
         <tag>Javascript</tag>
         <tag>Vue</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>探討Javascript的Hoisting</title>
+    <url>/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，這一篇我們來簡單了解一下Hoisting的運作</p>
+<span id="more"></span>
+<hr>
+<h2 id="var變數的Hoisting"><a href="#var變數的Hoisting" class="headerlink" title="var變數的Hoisting"></a>var變數的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+<p>上述結果會印出undefined，為什麼呢？因為這樣寫法等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> x</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line">x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升</p>
+<h2 id="傳統函式的Hoisting"><a href="#傳統函式的Hoisting" class="headerlink" title="傳統函式的Hoisting"></a>傳統函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述結果會印出Hello，因為整個function都會被提升，這樣寫法等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<p>這也就是為什麼在Javascript裡頭將一個函式用function宣告，也能順利執行函式的原因，因為整個function都提升到呼叫語句之前了阿！</p>
+<h2 id="var變數宣告函式的Hoisting"><a href="#var變數宣告函式的Hoisting" class="headerlink" title="var變數宣告函式的Hoisting"></a>var變數宣告函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>會發生錯誤<em>Uncaught TypeError: test is not a function”</em> ，因為這樣的宣告方式等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test</span><br><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line">test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升，所以這邊的test是undefined，自然而然用函式的方式直接呼叫，瀏覽器就報給我們一個錯誤說test不是一個function。所以如果要用變數宣告function的話，務必要用以下的方式</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<p>然後我也會習慣把var改為const方式來宣告，也有點防呆的機制，讓後續的指派變數動作不會誤指派值給這個function，因為我們也很少會把宣告出來的函式重新指派值</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
+<li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
+<li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
       </tags>
   </entry>
   <entry>
