@@ -19,15 +19,15 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fredchang14.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="前言我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？">
+    <meta name="description" content="我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用for迴圈執行setTimeout方法印出1~5有哪些解法">
 <meta property="og:url" content="https://fredchang14.github.io/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/index.html">
 <meta property="og:site_name" content="Fred Chang學習紀錄">
-<meta property="og:description" content="前言我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？">
+<meta property="og:description" content="我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2023-10-27T05:15:57.000Z">
-<meta property="article:modified_time" content="2023-10-30T03:57:23.977Z">
+<meta property="article:modified_time" content="2023-11-02T06:36:51.320Z">
 <meta property="article:author" content="Fred Chang">
 <meta property="article:tag" content="Javascript">
 <meta name="twitter:card" content="summary">
@@ -212,7 +212,7 @@
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
       <meta itemprop="name" content="用for迴圈執行setTimeout方法印出1~5有哪些解法 | Fred Chang學習紀錄">
-      <meta itemprop="description" content="">
+      <meta itemprop="description" content="我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -249,6 +249,7 @@
     </span>
 </div>
 
+            <div class="post-description">我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？</div>
         </div>
       </header>
 
@@ -256,8 +257,6 @@
     
     
     <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？</p>
-<span id="more"></span>
-
 <h2 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h2><p>使用var不做任何處理，想取得第一秒時取得1、第二秒取得2、…、第五秒取得5</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>卻發現第一秒卻取得5、第二秒也是取得5，一直到第五秒也是取得5。為什麼會發生這樣的問題？因為i變數是用var宣告的，這個變數已經跑到5，並且已經污染到全域了。<br>可以在這段程式碼後面是者印出i來看看，我們可以取得迴圈內的變數i的值console.log(i)，會發現印出5</p>
