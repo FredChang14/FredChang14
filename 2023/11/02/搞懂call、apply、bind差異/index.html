@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://fredchang14.github.io/img/call%E3%80%81apply%E3%80%81bind%E6%96%87%E7%AB%A0-1.PNG">
 <meta property="og:image" content="https://fredchang14.github.io/img/call%E3%80%81apply%E3%80%81bind%E6%96%87%E7%AB%A0-2.PNG">
 <meta property="article:published_time" content="2023-11-02T00:57:16.000Z">
-<meta property="article:modified_time" content="2023-11-02T03:51:14.339Z">
+<meta property="article:modified_time" content="2023-11-02T05:26:01.739Z">
 <meta property="article:author" content="Fred Chang">
 <meta property="article:tag" content="Javascript">
 <meta name="twitter:card" content="summary">
@@ -262,17 +262,17 @@
     <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>透過這篇將在框架源碼(如Vue.js)常常會用到的手法call、apply、bind做一些觀念的釐清，幫助自己在看源碼的時候可以更清楚框架作者的撰寫邏輯，也紀錄之前常搞錯觀念的例子提醒自己。</p>
 <hr>
 <h2 id="了解call、apply、bind用法"><a href="#了解call、apply、bind用法" class="headerlink" title="了解call、apply、bind用法"></a>了解call、apply、bind用法</h2><ul>
-<li><p>call</p>
+<li><p><strong>call</strong></p>
 <blockquote>
 <p>用法：函式名稱.call(綁定物件,參數,…)<br>返回值：函式執行後的結果</p>
 </blockquote>
 </li>
-<li><p>apply</p>
+<li><p><strong>apply</strong></p>
 <blockquote>
 <p>用法：函式名稱.apply(綁定物件,[參數,…])<br>返回值：函式執行後的結果</p>
 </blockquote>
 </li>
-<li><p>bind</p>
+<li><p><strong>bind</strong>   <em>(這邊不討論bind傳其他參數用法)</em></p>
 <blockquote>
 <p>用法：函式名稱.bind(新的綁定物件)<br>返回值：函式本身</p>
 </blockquote>
@@ -302,7 +302,7 @@
 <hr>
 <h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
 <li>call和apply都是執行函式，所以會return<strong>函式的結果</strong>；但bind就不同了，它只是單純綁定物件，return<strong>函式本身</strong>(也就是未執行)</li>
-<li>如果call和apply不綁定物件就填上null即可，就是會跟一般函式的執行結果一樣。(但我們一般不太會去綁null這件事啦，有點脫褲子放屁的感覺www)</li>
+<li>如果call和apply不綁定物件就填上null即可，就是會跟一般函式的執行結果一樣。(但我們一般不太會去綁null，有點脫褲子放屁的感覺www)</li>
 <li>這三個用法常常會跟this扯上關係，是用來改變原函式this的指向。</li>
 </ol>
 
