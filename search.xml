@@ -1,126 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>使用Python串接Azure OpenAI服務</title>
-    <url>/2023/11/01/%E4%BD%BF%E7%94%A8Python%E4%B8%B2%E6%8E%A5Azure%20OpenAI%E6%9C%8D%E5%8B%99/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由於工作需求，我開始使用Azure AI平台。在網路上尋找相關教學時，在打Azure openai的api前所需要填入的參數不知道該往哪裡找。為了方便其他使用者，在這裡記錄一份詳細的指南，說明如何在Azure平台上迅速找到與Azure OpenAI相關的資訊。隨後，我將展示如何將這些資訊正確填入Python程式碼中，並成功執行。</p>
-<span id="more"></span>
-<hr>
-<h2 id="環境介紹"><a href="#環境介紹" class="headerlink" title="環境介紹"></a>環境介紹</h2><p>Python 3.11<br>openai 0.28.1   (自行在IDE上安裝)</p>
-<blockquote>
-<p>須特別留意，Python一定要3.7.1版本以上，先前筆者一直使用3.7版本，即或資訊都填對，程式也都會發生錯誤</p>
-</blockquote>
-<h2 id="Azure-AI平台登入取得資訊並Python程式碼參數填寫步驟說明"><a href="#Azure-AI平台登入取得資訊並Python程式碼參數填寫步驟說明" class="headerlink" title="Azure AI平台登入取得資訊並Python程式碼參數填寫步驟說明"></a>Azure AI平台登入取得資訊並Python程式碼參數填寫步驟說明</h2><ol>
-<li><p>到這個網址進行登入 <a href="https://azure.microsoft.com/zh-tw/solutions/ai">https://azure.microsoft.com/zh-tw/solutions/ai</a> 後，連至主控台<br>並點選Azure OpenAI(如沒有出現在主控台，可直接用上方搜尋欄輸入Azure OpenAI送出即可)<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-1.PNG"></p>
-</li>
-<li><p>點選之前有創建過的GPT模型名稱<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-2.PNG"></p>
-</li>
-<li><p>點選左側「模型部署」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-3.PNG"></p>
-</li>
-<li><p>再點選「管理部署」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-4.PNG"></p>
-</li>
-<li><p>就會連至Azure OpenAIO Studio介面，點選左側選單「聊天」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-5.PNG"></p>
-</li>
-<li><p>確認右側設定是否就是我們先前部署的部署名稱 (就是確認服務的意思)，確認沒問題，點選「檢視程式碼」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-6.PNG"></p>
-</li>
-<li><p>就會看到提供的Python範例程式碼<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-7.PNG"><br>將全部程式碼複製下來到你的IDE上</p>
- <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment">#Note: The openai-python library support for Azure OpenAI is in preview.</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> openai</span><br><span class="line">openai.api_type = <span class="string">&quot;azure&quot;</span></span><br><span class="line">openai.api_base = <span class="string">&quot;https://gpt-xxx.openai.azure.com/&quot;</span></span><br><span class="line">openai.api_version = <span class="string">&quot;2023-07-01-preview&quot;</span></span><br><span class="line">openai.api_key = os.getenv(<span class="string">&quot;OPENAI_API_KEY&quot;</span>)</span><br><span class="line"></span><br><span class="line">response = openai.ChatCompletion.create(</span><br><span class="line">engine=<span class="string">&quot;gpt35-xxx&quot;</span>,</span><br><span class="line">messages = [&#123;<span class="string">&quot;role&quot;</span>:<span class="string">&quot;system&quot;</span>,<span class="string">&quot;content&quot;</span>:<span class="string">&quot;You are an AI assistant that helps people find information.&quot;</span>&#125;],</span><br><span class="line">temperature=<span class="number">0.7</span>,</span><br><span class="line">max_tokens=<span class="number">800</span>,</span><br><span class="line">top_p=<span class="number">0.95</span>,</span><br><span class="line">frequency_penalty=<span class="number">0</span>,</span><br><span class="line">presence_penalty=<span class="number">0</span>,</span><br><span class="line">stop=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>這時候我們會需要API Key，連回至<a href="https://portal.azure.com/">https://portal.azure.com/</a> ，回到本文1~2步驟，選到你的Azure OpenAI服務，接著點選左側「金鑰與端點」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-8.PNG"></p>
-</li>
-<li><p>點選金鑰1或金鑰2複製都可以，複製下來貼上到第7步驟程式碼的<strong>openai.api_key</strong>的值<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-9.PNG"></p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">openai.api_key = <span class="string">&quot;XXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> <span class="comment"># 替換成複製下來的Key</span></span><br></pre></td></tr></table></figure>
-<p>並印出GPT回應內容</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(response.choices[<span class="number">0</span>].message.content)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>執行程式，如果能成功印出內容就代表串接成功了，像筆者是取得以下回應，每人會不同<br><em>Hello! I am an AI assistant here to help you find information. What can I help you with today?</em></p>
-</li>
-</ol>
-<hr>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>對於一開始接觸Azure AI的人可能有時候需要的資訊會找不太到，所以紀錄一下，讓未來的自己和新接觸的人可以看到這篇記錄快速完成串接。</p>
-]]></content>
-      <categories>
-        <category>AI</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>AI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>如何在Nuxt3使用vue-social-sharing套件</title>
-    <url>/2023/10/27/%E5%A6%82%E4%BD%95%E5%9C%A8Nuxt3%E4%BD%BF%E7%94%A8vue-social-sharing%E5%A5%97%E4%BB%B6/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>vue-social-sharing是用來透過社群軟體分享網頁內容的一個套件，例如：Facebook、Line 社群軟體，在npm有高手寫了一個vue-social-sharing套件，在Vue和Nuxt2可以成功用說明成功安裝並使用，但在Nuxt3會引入失敗，所以這一篇文章就來實現如何在Nuxt3將此套件引入並實作相關邏輯出來。</p>
-<span id="more"></span>
-<h2 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h2><ol>
-<li><p>先進行套件安裝 npm install — save vue-social-sharing@next</p>
-</li>
-<li><p>嘗試依據npm作者提供之方式引入，在nuxt.config.ts檔案內寫上modules屬性內寫入套件名。</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtConfig</span>(&#123;</span><br><span class="line">    <span class="attr">modules</span>: [</span><br><span class="line">        <span class="string">&#x27;vue-social-sharing/nuxt&#x27;</span></span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>但無法順利引用，判斷套件可使用在Nuxt2，無法使用在Nuxt3。</p>
-<ol start="3">
-<li><p>解決方法：使用plungins方式引用此套件</p>
-<p> (1)於plugins內新增socialSharing.js檔案，內容如下</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">VueSocialSharing</span> <span class="keyword">from</span> <span class="string">&quot;vue-social-sharing&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtPlugin</span>(<span class="function"><span class="params">nuxtApp</span> =&gt;</span> &#123;</span><br><span class="line">    nuxtApp.<span class="property">vueApp</span>.<span class="title function_">use</span>(<span class="title class_">VueSocialSharing</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p> (2)在components資料夾內新增SocialShare.vue檔，內容如下</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">const</span> sharing = <span class="title function_">ref</span>(&#123;</span><br><span class="line">    <span class="attr">url</span>: <span class="string">&quot;https://github.com/nicolasbeauvais/vue-social-sharing?ref=morioh.com&amp;utm_source=morioh.com&quot;</span>,</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&quot;Say hi to Vite! A brand new, extremely fast development setup for Vue.&quot;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&#x27;This week, I’d like to introduce you to &quot;Vite&quot;, which means &quot;Fast&quot;. It’s a brand new development setup created by Evan You.&#x27;</span>,</span><br><span class="line">    <span class="attr">quote</span>: <span class="string">&quot;The hot reload is so fast it&#x27;s near instant. - Evan You&quot;</span>,</span><br><span class="line">    <span class="attr">hashtags</span>: <span class="string">&quot;vuejs,vite,javascript&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> networks = <span class="title function_">reactive</span>([</span><br><span class="line">    &#123; <span class="attr">network</span>: <span class="string">&quot;facebook&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;Facebook&quot;</span>, <span class="attr">icon</span>: <span class="string">&quot;fab fah fa-lg fa-facebook-f&quot;</span>, <span class="attr">color</span>: <span class="string">&quot;#1877f2&quot;</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">network</span>: <span class="string">&quot;line&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;Line&quot;</span>, <span class="attr">icon</span>: <span class="string">&quot;fab fah fa-lg fa-line&quot;</span>, <span class="attr">color</span>: <span class="string">&quot;#00c300&quot;</span> &#125;,</span><br><span class="line">]);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">ShareNetwork</span> <span class="attr">class</span>=<span class="string">&quot;float-right&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">v-for</span>=<span class="string">&quot;network in networks&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:network</span>=<span class="string">&quot;network.network&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:key</span>=<span class="string">&quot;network.network&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:style</span>=<span class="string">&quot;&#123; backgroundColor: network.color &#125;&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:url</span>=<span class="string">&quot;sharing.url&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:title</span>=<span class="string">&quot;sharing.title&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:description</span>=<span class="string">&quot;sharing.description&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:quote</span>=<span class="string">&quot;sharing.quote&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:hashtags</span>=<span class="string">&quot;sharing.hashtags&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:twitterUser</span>=<span class="string">&quot;sharing.twitterUser&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    &gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">i</span> <span class="attr">:class</span>=<span class="string">&quot;network.icon&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123; network.name &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">ShareNetwork</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-<p> (3) 如有多個分享社群，因Nuxt server render問題，會發生只有第一個社群媒體圖示會正常呈現出來，則引入上述步驟時的component時應使用defineAsyncComponent非同步引入方式，script標籤內容如下</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">SocialShare</span> = <span class="title function_">defineAsyncComponent</span>(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;../components/SocialShare.vue&quot;</span>));</span><br></pre></td></tr></table></figure>
-
-<p> 並在template使用ClientOnly方式，讓該component只在client端render出來，內容如下</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;<span class="title class_">ClientOnly</span>&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">template</span> #<span class="attr">default</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">SocialShare</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">template</span> #<span class="attr">fallback</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">p</span>&gt;</span>Loading...<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">&lt;/<span class="title class_">ClientOnly</span>&gt;</span><br></pre></td></tr></table></figure>
-
-<p> (4) 成功引入！</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-        <tag>Vue</tag>
-        <tag>Nuxt</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>探討Javascript的Hoisting</title>
-    <url>/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，這一篇我們來簡單了解一下Hoisting的運作</p>
-<span id="more"></span>
-<hr>
-<h2 id="var變數的Hoisting"><a href="#var變數的Hoisting" class="headerlink" title="var變數的Hoisting"></a>var變數的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>上述結果會印出undefined，為什麼呢？因為這樣寫法等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> x</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line">x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升</p>
-<h2 id="傳統函式的Hoisting"><a href="#傳統函式的Hoisting" class="headerlink" title="傳統函式的Hoisting"></a>傳統函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述結果會印出Hello，因為整個function都會被提升，這樣寫法等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<p>這也就是為什麼在Javascript裡頭將一個函式用function宣告，也能順利執行函式的原因，因為整個function都提升到呼叫語句之前了阿！</p>
-<h2 id="var變數宣告函式的Hoisting"><a href="#var變數宣告函式的Hoisting" class="headerlink" title="var變數宣告函式的Hoisting"></a>var變數宣告函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>會發生錯誤<em>Uncaught TypeError: test is not a function”</em> ，因為這樣的宣告方式等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test</span><br><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line">test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升，所以這邊的test是undefined，自然而然用函式的方式直接呼叫，瀏覽器就報給我們一個錯誤說test不是一個function。所以如果要用變數宣告function的話，務必要用以下的方式</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<p>然後我也會習慣把var改為const方式來宣告，也有點防呆的機制，讓後續的指派變數動作不會誤指派值給這個function，因為我們也很少會把宣告出來的函式重新指派值</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
-<li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
-<li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>探究Vue的watch機制</title>
     <url>/2023/10/27/%E6%8E%A2%E7%A9%B6Vue%E7%9A%84watch%E6%A9%9F%E5%88%B6/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Vue.js我們常常會使用watch來做一些對應處理，例如可以監控某值出現變化的時候，就觸發function去做事情，有時候我們也會需要拿到變化前的值或變化後的值去做利用。此篇我們來探討一下watch機制如何運作</p>
@@ -174,6 +54,154 @@
       </tags>
   </entry>
   <entry>
+    <title>如何在Nuxt3使用vue-social-sharing套件</title>
+    <url>/2023/10/27/%E5%A6%82%E4%BD%95%E5%9C%A8Nuxt3%E4%BD%BF%E7%94%A8vue-social-sharing%E5%A5%97%E4%BB%B6/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>vue-social-sharing是用來透過社群軟體分享網頁內容的一個套件，例如：Facebook、Line 社群軟體，在npm有高手寫了一個vue-social-sharing套件，在Vue和Nuxt2可以成功用說明成功安裝並使用，但在Nuxt3會引入失敗，所以這一篇文章就來實現如何在Nuxt3將此套件引入並實作相關邏輯出來。</p>
+<span id="more"></span>
+<h2 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h2><ol>
+<li><p>先進行套件安裝 npm install — save vue-social-sharing@next</p>
+</li>
+<li><p>嘗試依據npm作者提供之方式引入，在nuxt.config.ts檔案內寫上modules屬性內寫入套件名。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtConfig</span>(&#123;</span><br><span class="line">    <span class="attr">modules</span>: [</span><br><span class="line">        <span class="string">&#x27;vue-social-sharing/nuxt&#x27;</span></span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>但無法順利引用，判斷套件可使用在Nuxt2，無法使用在Nuxt3。</p>
+<ol start="3">
+<li><p>解決方法：使用plungins方式引用此套件</p>
+<p> (1)於plugins內新增socialSharing.js檔案，內容如下</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">VueSocialSharing</span> <span class="keyword">from</span> <span class="string">&quot;vue-social-sharing&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtPlugin</span>(<span class="function"><span class="params">nuxtApp</span> =&gt;</span> &#123;</span><br><span class="line">    nuxtApp.<span class="property">vueApp</span>.<span class="title function_">use</span>(<span class="title class_">VueSocialSharing</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p> (2)在components資料夾內新增SocialShare.vue檔，內容如下</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">const</span> sharing = <span class="title function_">ref</span>(&#123;</span><br><span class="line">    <span class="attr">url</span>: <span class="string">&quot;https://github.com/nicolasbeauvais/vue-social-sharing?ref=morioh.com&amp;utm_source=morioh.com&quot;</span>,</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&quot;Say hi to Vite! A brand new, extremely fast development setup for Vue.&quot;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&#x27;This week, I’d like to introduce you to &quot;Vite&quot;, which means &quot;Fast&quot;. It’s a brand new development setup created by Evan You.&#x27;</span>,</span><br><span class="line">    <span class="attr">quote</span>: <span class="string">&quot;The hot reload is so fast it&#x27;s near instant. - Evan You&quot;</span>,</span><br><span class="line">    <span class="attr">hashtags</span>: <span class="string">&quot;vuejs,vite,javascript&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> networks = <span class="title function_">reactive</span>([</span><br><span class="line">    &#123; <span class="attr">network</span>: <span class="string">&quot;facebook&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;Facebook&quot;</span>, <span class="attr">icon</span>: <span class="string">&quot;fab fah fa-lg fa-facebook-f&quot;</span>, <span class="attr">color</span>: <span class="string">&quot;#1877f2&quot;</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">network</span>: <span class="string">&quot;line&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;Line&quot;</span>, <span class="attr">icon</span>: <span class="string">&quot;fab fah fa-lg fa-line&quot;</span>, <span class="attr">color</span>: <span class="string">&quot;#00c300&quot;</span> &#125;,</span><br><span class="line">]);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">ShareNetwork</span> <span class="attr">class</span>=<span class="string">&quot;float-right&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">v-for</span>=<span class="string">&quot;network in networks&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:network</span>=<span class="string">&quot;network.network&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:key</span>=<span class="string">&quot;network.network&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:style</span>=<span class="string">&quot;&#123; backgroundColor: network.color &#125;&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:url</span>=<span class="string">&quot;sharing.url&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:title</span>=<span class="string">&quot;sharing.title&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:description</span>=<span class="string">&quot;sharing.description&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:quote</span>=<span class="string">&quot;sharing.quote&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:hashtags</span>=<span class="string">&quot;sharing.hashtags&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">:twitterUser</span>=<span class="string">&quot;sharing.twitterUser&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    &gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">i</span> <span class="attr">:class</span>=<span class="string">&quot;network.icon&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123; network.name &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">ShareNetwork</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p> (3) 如有多個分享社群，因Nuxt server render問題，會發生只有第一個社群媒體圖示會正常呈現出來，則引入上述步驟時的component時應使用defineAsyncComponent非同步引入方式，script標籤內容如下</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">SocialShare</span> = <span class="title function_">defineAsyncComponent</span>(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;../components/SocialShare.vue&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p> 並在template使用ClientOnly方式，讓該component只在client端render出來，內容如下</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;<span class="title class_">ClientOnly</span>&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">template</span> #<span class="attr">default</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">SocialShare</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">template</span> #<span class="attr">fallback</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">p</span>&gt;</span>Loading...<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">&lt;/<span class="title class_">ClientOnly</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p> (4) 成功引入！</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
+        <tag>Vue</tag>
+        <tag>Nuxt</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Python串接Azure OpenAI服務</title>
+    <url>/2023/11/01/%E4%BD%BF%E7%94%A8Python%E4%B8%B2%E6%8E%A5Azure%20OpenAI%E6%9C%8D%E5%8B%99/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由於工作需求，我開始使用Azure AI平台。在網路上尋找相關教學時，在打Azure openai的api前所需要填入的參數不知道該往哪裡找。為了方便其他使用者，在這裡記錄一份詳細的指南，說明如何在Azure平台上迅速找到與Azure OpenAI相關的資訊。隨後，我將展示如何將這些資訊正確填入Python程式碼中，並成功執行。</p>
+<hr>
+<h2 id="環境介紹"><a href="#環境介紹" class="headerlink" title="環境介紹"></a>環境介紹</h2><p>Python 3.11<br>openai 0.28.1   (自行在IDE上安裝)</p>
+<blockquote>
+<p>須特別留意，Python一定要3.7.1版本以上，先前筆者一直使用3.7版本，即或資訊都填對，程式也都會發生錯誤</p>
+</blockquote>
+<h2 id="Azure-AI平台登入取得資訊並Python程式碼參數填寫步驟說明"><a href="#Azure-AI平台登入取得資訊並Python程式碼參數填寫步驟說明" class="headerlink" title="Azure AI平台登入取得資訊並Python程式碼參數填寫步驟說明"></a>Azure AI平台登入取得資訊並Python程式碼參數填寫步驟說明</h2><ol>
+<li><p>到這個網址進行登入 <a href="https://azure.microsoft.com/zh-tw/solutions/ai">https://azure.microsoft.com/zh-tw/solutions/ai</a> 後，連至主控台<br>並點選Azure OpenAI(如沒有出現在主控台，可直接用上方搜尋欄輸入Azure OpenAI送出即可)<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-1.PNG"></p>
+</li>
+<li><p>點選之前有創建過的GPT模型名稱<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-2.PNG"></p>
+</li>
+<li><p>點選左側「模型部署」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-3.PNG"></p>
+</li>
+<li><p>再點選「管理部署」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-4.PNG"></p>
+</li>
+<li><p>就會連至Azure OpenAIO Studio介面，點選左側選單「聊天」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-5.PNG"></p>
+</li>
+<li><p>確認右側設定是否就是我們先前部署的部署名稱 (就是確認服務的意思)，確認沒問題，點選「檢視程式碼」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-6.PNG"></p>
+</li>
+<li><p>就會看到提供的Python範例程式碼<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-7.PNG"><br>將全部程式碼複製下來到你的IDE上</p>
+ <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment">#Note: The openai-python library support for Azure OpenAI is in preview.</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> openai</span><br><span class="line">openai.api_type = <span class="string">&quot;azure&quot;</span></span><br><span class="line">openai.api_base = <span class="string">&quot;https://gpt-xxx.openai.azure.com/&quot;</span></span><br><span class="line">openai.api_version = <span class="string">&quot;2023-07-01-preview&quot;</span></span><br><span class="line">openai.api_key = os.getenv(<span class="string">&quot;OPENAI_API_KEY&quot;</span>)</span><br><span class="line"></span><br><span class="line">response = openai.ChatCompletion.create(</span><br><span class="line">engine=<span class="string">&quot;gpt35-xxx&quot;</span>,</span><br><span class="line">messages = [&#123;<span class="string">&quot;role&quot;</span>:<span class="string">&quot;system&quot;</span>,<span class="string">&quot;content&quot;</span>:<span class="string">&quot;You are an AI assistant that helps people find information.&quot;</span>&#125;],</span><br><span class="line">temperature=<span class="number">0.7</span>,</span><br><span class="line">max_tokens=<span class="number">800</span>,</span><br><span class="line">top_p=<span class="number">0.95</span>,</span><br><span class="line">frequency_penalty=<span class="number">0</span>,</span><br><span class="line">presence_penalty=<span class="number">0</span>,</span><br><span class="line">stop=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>這時候我們會需要API Key，連回至<a href="https://portal.azure.com/">https://portal.azure.com/</a> ，回到本文1~2步驟，選到你的Azure OpenAI服務，接著點選左側「金鑰與端點」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-8.PNG"></p>
+</li>
+<li><p>點選金鑰1或金鑰2複製都可以，複製下來貼上到第7步驟程式碼的<strong>openai.api_key</strong>的值<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-9.PNG"></p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">openai.api_key = <span class="string">&quot;XXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> <span class="comment"># 替換成複製下來的Key</span></span><br></pre></td></tr></table></figure>
+<p>並印出GPT回應內容</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(response.choices[<span class="number">0</span>].message.content)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>執行程式，如果能成功印出內容就代表串接成功了，像筆者是取得以下回應，每人會不同<br><em>Hello! I am an AI assistant here to help you find information. What can I help you with today?</em></p>
+</li>
+</ol>
+<hr>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>對於一開始接觸Azure AI的人可能有時候需要的資訊會找不太到，所以紀錄一下，讓未來的自己和新接觸的人可以看到這篇記錄快速完成串接。</p>
+]]></content>
+      <categories>
+        <category>AI</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>AI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搞懂Javascript的this</title>
+    <url>/2023/10/27/%E6%90%9E%E6%87%82Javascript%E7%9A%84this/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Javascript程式語言中，常面臨到this，但也很常搞不太清楚this指向的對象是誰，而造成程式的一些bug，透過這篇文章來釐清並整理一下this的觀念，以下將用各情境來說明。</p>
+<span id="more"></span>
+<hr>
+<h2 id="情境1-直接宣告this"><a href="#情境1-直接宣告this" class="headerlink" title="情境1-直接宣告this"></a>情境1-直接宣告this</h2><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(this) <span class="comment">//Window</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>會發現無任何包裝，直接印出this，會指向Window物件</p>
+<h2 id="情境2-獨立函式內的this"><a href="#情境2-獨立函式內的this" class="headerlink" title="情境2-獨立函式內的this"></a>情境2-獨立函式內的this</h2><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">testFn</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(this); <span class="comment">//Window</span></span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(this.innerWidth); <span class="comment">//可以印出視窗的寬度</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>獨立函式內的this也是指向Window物件</p>
+<h2 id="情境3-物件方法內的this"><a href="#情境3-物件方法內的this" class="headerlink" title="情境3-物件方法內的this"></a>情境3-物件方法內的this</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;Fred&quot;</span>,</span><br><span class="line">  <span class="attr">say</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//person物件本身</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">name</span>); <span class="comment">//Fred</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">person.<span class="title function_">say</span>();</span><br></pre></td></tr></table></figure>
+<p>可以看出物件方法內的this就是物件本身，所以也能因此再找出其他屬性或方法，如name屬性，就印出Fred。<br>這時候我們來實驗一下，把傳統function改為箭頭函式會發生什麼事情呢？</p>
+<figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line">let person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;Fred&quot;</span>,</span><br><span class="line">  <span class="attr">say</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(this); <span class="comment">//Window</span></span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(this.name); <span class="comment">//undefined</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">person.say();</span><br></pre></td></tr></table></figure>
+<p>這時候發現this竟然會印出Window物件，為什麼呢？因為如果用箭頭函式，就沒有自己的this，所以如果在箭頭函式內沒有找到this變數，就會往外找，就直接找到Window物件，所以也因為Window沒有name的屬性，自然this.name就印出undefined了。所以使用箭頭函式時要特別注意一下這個觀念。</p>
+<h2 id="情境4-事件處理function"><a href="#情境4-事件處理function" class="headerlink" title="情境4-事件處理function"></a>情境4-事件處理function</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//document元素</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="string">&quot;我被點到了&quot;</span>;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>this就是觸發事件的對象物件，像上述範例來說，就是document元素。<br>若改為箭頭函式，會發生什麼事呢？</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//Window</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="string">&quot;我被點到了&quot;</span>;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>在情境3時我們有提到箭頭函式沒有自己的this，所以函式內的this就是往外找，也找到了Window物件，因此，如果我們點一下畫面會直接報錯Uncaught TypeError: Cannot set properties of undefined (setting ‘innerHTML’)</p>
+<h2 id="情境5-建構函式-Constructor-Function"><a href="#情境5-建構函式-Constructor-Function" class="headerlink" title="情境5-建構函式(Constructor Function)"></a>情境5-建構函式(Constructor Function)</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Person</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//&#123;&#125;</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = <span class="string">&quot;Fred&quot;</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">age</span> = <span class="number">18</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> p1 = <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(p1); <span class="comment">//&#123;age: 18,name: &quot;Fred&quot;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>這個範例可以發現第2行的this印出來是Person空白物件，不是一般物件。</p>
+<hr>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>在做專案的時候常常因為追求語法閱讀與簡潔所以常會用到this，但往往沒有搞懂一些概念而造成意外的bug發生，如果再加上箭頭函式的觀念也沒有搞清楚的話，除錯起來也是很辛苦的，所以特別將this用法整理出來，也提醒自己要留意this的指向。</p>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>探討Javascript的Hoisting</title>
+    <url>/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。</p>
+<hr>
+<h2 id="var變數的Hoisting"><a href="#var變數的Hoisting" class="headerlink" title="var變數的Hoisting"></a>var變數的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+<p>上述結果會印出undefined，為什麼呢？因為這樣寫法等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> x</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line">x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升</p>
+<h2 id="傳統函式的Hoisting"><a href="#傳統函式的Hoisting" class="headerlink" title="傳統函式的Hoisting"></a>傳統函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述結果會印出Hello，因為整個function都會被提升，這樣寫法等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<p>這也就是為什麼在Javascript裡頭將一個函式用function宣告，也能順利執行函式的原因，因為整個function都提升到呼叫語句之前了阿！</p>
+<h2 id="var變數宣告函式的Hoisting"><a href="#var變數宣告函式的Hoisting" class="headerlink" title="var變數宣告函式的Hoisting"></a>var變數宣告函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>會發生錯誤<em>Uncaught TypeError: test is not a function”</em> ，因為這樣的宣告方式等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test</span><br><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line">test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升，所以這邊的test是undefined，自然而然用函式的方式直接呼叫，瀏覽器就報給我們一個錯誤說test不是一個function。所以如果要用變數宣告function的話，務必要用以下的方式</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<p>然後我也會習慣把var改為const方式來宣告，也有點防呆的機制，讓後續的指派變數動作不會誤指派值給這個function，因為我們也很少會把宣告出來的函式重新指派值</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
+<li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
+<li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>用for迴圈執行setTimeout方法印出1~5有哪些解法</title>
     <url>/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？</p>
@@ -210,27 +238,54 @@
       </tags>
   </entry>
   <entry>
-    <title>搞懂Javascript的this</title>
-    <url>/2023/10/27/%E6%90%9E%E6%87%82Javascript%E7%9A%84this/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Javascript程式語言中，常面臨到this，但也很常搞不太清楚this指向的對象是誰，而造成程式的一些bug，透過這篇文章來釐清並整理一下this的觀念，以下將用各情境來說明。</p>
-<span id="more"></span>
+    <title>搞懂call、apply、bind差異</title>
+    <url>/2023/11/02/%E6%90%9E%E6%87%82call%E3%80%81apply%E3%80%81bind%E5%B7%AE%E7%95%B0/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>透過這篇將在框架源碼(如Vue.js)常常會用到的手法call、apply、bind做一些觀念的釐清，幫助自己在看源碼的時候可以更清楚框架作者的撰寫邏輯，也紀錄之前常搞錯觀念的例子提醒自己。</p>
 <hr>
-<h2 id="情境1-直接宣告this"><a href="#情境1-直接宣告this" class="headerlink" title="情境1-直接宣告this"></a>情境1-直接宣告this</h2><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(this) <span class="comment">//Window</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>會發現無任何包裝，直接印出this，會指向Window物件</p>
-<h2 id="情境2-獨立函式內的this"><a href="#情境2-獨立函式內的this" class="headerlink" title="情境2-獨立函式內的this"></a>情境2-獨立函式內的this</h2><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">testFn</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(this); <span class="comment">//Window</span></span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(this.innerWidth); <span class="comment">//可以印出視窗的寬度</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>獨立函式內的this也是指向Window物件</p>
-<h2 id="情境3-物件方法內的this"><a href="#情境3-物件方法內的this" class="headerlink" title="情境3-物件方法內的this"></a>情境3-物件方法內的this</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;Fred&quot;</span>,</span><br><span class="line">  <span class="attr">say</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//person物件本身</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">name</span>); <span class="comment">//Fred</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">person.<span class="title function_">say</span>();</span><br></pre></td></tr></table></figure>
-<p>可以看出物件方法內的this就是物件本身，所以也能因此再找出其他屬性或方法，如name屬性，就印出Fred。<br>這時候我們來實驗一下，把傳統function改為箭頭函式會發生什麼事情呢？</p>
-<figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line">let person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;Fred&quot;</span>,</span><br><span class="line">  <span class="attr">say</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(this); <span class="comment">//Window</span></span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(this.name); <span class="comment">//undefined</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">person.say();</span><br></pre></td></tr></table></figure>
-<p>這時候發現this竟然會印出Window物件，為什麼呢？因為如果用箭頭函式，就沒有自己的this，所以如果在箭頭函式內沒有找到this變數，就會往外找，就直接找到Window物件，所以也因為Window沒有name的屬性，自然this.name就印出undefined了。所以使用箭頭函式時要特別注意一下這個觀念。</p>
-<h2 id="情境4-事件處理function"><a href="#情境4-事件處理function" class="headerlink" title="情境4-事件處理function"></a>情境4-事件處理function</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//document元素</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="string">&quot;我被點到了&quot;</span>;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>this就是觸發事件的對象物件，像上述範例來說，就是document元素。<br>若改為箭頭函式，會發生什麼事呢？</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//Window</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="string">&quot;我被點到了&quot;</span>;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>在情境3時我們有提到箭頭函式沒有自己的this，所以函式內的this就是往外找，也找到了Window物件，因此，如果我們點一下畫面會直接報錯Uncaught TypeError: Cannot set properties of undefined (setting ‘innerHTML’)</p>
-<h2 id="情境5-建構函式-Constructor-Function"><a href="#情境5-建構函式-Constructor-Function" class="headerlink" title="情境5-建構函式(Constructor Function)"></a>情境5-建構函式(Constructor Function)</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Person</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//&#123;&#125;</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = <span class="string">&quot;Fred&quot;</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">age</span> = <span class="number">18</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> p1 = <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(p1); <span class="comment">//&#123;age: 18,name: &quot;Fred&quot;&#125;</span></span><br></pre></td></tr></table></figure>
-<p>這個範例可以發現第2行的this印出來是Person空白物件，不是一般物件。</p>
+<h2 id="了解call、apply、bind用法"><a href="#了解call、apply、bind用法" class="headerlink" title="了解call、apply、bind用法"></a>了解call、apply、bind用法</h2><ul>
+<li><p>call</p>
+<blockquote>
+<p>用法：函式名稱.call(綁定物件,參數,…)<br>返回值：函式執行後的結果</p>
+</blockquote>
+</li>
+<li><p>apply</p>
+<blockquote>
+<p>用法：函式名稱.apply(綁定物件,[參數,…])<br>返回值：函式執行後的結果</p>
+</blockquote>
+</li>
+<li><p>bind</p>
+<blockquote>
+<p>用法：函式名稱.bind(新的綁定物件)<br>返回值：函式本身</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="call和apply為函式呼叫"><a href="#call和apply為函式呼叫" class="headerlink" title="call和apply為函式呼叫"></a>call和apply為函式呼叫</h2><p>先來看以下範例</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">testFn</span>(<span class="params">a, b, c</span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(a, b, c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">testFn</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>) <span class="comment">// 1,2,3</span></span><br><span class="line">testFn.<span class="title function_">call</span>(<span class="literal">null</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>) <span class="comment">// 1,2,3</span></span><br><span class="line">testFn.<span class="title function_">apply</span>(<span class="literal">null</span>, [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]) <span class="comment">// 1,2,3</span></span><br></pre></td></tr></table></figure>
+<p>上述結果都是印出1,2,3，<code>testFn(1,2,3)</code>為一般函式呼叫方式，應該都很熟悉。<br>上述call和apply不綁定任何物件，所以塞了一個null，然後填上參數名(要留意apply的用法的參數是要用陣列[]裝起來)，並執行，可以證明call和apply的確就是執行函式，然後返為執行後的結果。</p>
+<h1 id="bind為綁定物件"><a href="#bind為綁定物件" class="headerlink" title="bind為綁定物件"></a>bind為綁定物件</h1><p>常見範例如下</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">initalName</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">Name</span> = initalName;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">sayHi</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">Name</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">delaySayHi</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;...Hi, My name is &#x27;</span>, <span class="variable language_">this</span>.<span class="property">Name</span>)</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> person = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&#x27;Fred&#x27;</span>);</span><br><span class="line">person.<span class="title function_">sayHi</span>();</span><br><span class="line">person.<span class="title function_">delaySayHi</span>();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>會發現印出結果是<br><img src="/img/call%E3%80%81apply%E3%80%81bind%E6%96%87%E7%AB%A0-1.PNG"><br>會發現setTimeout裡面印出的this.name會是<em>undefined</em>，因為這個this是指向全域的Window物件，該如何解決呢？<br>我們這時候就能夠用bind，所以改為以下程式碼</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Person</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params">initalName</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">Name</span> = initalName;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">sayHi</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">Name</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="title function_">delaySayHi</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;...Hi, My name is &#x27;</span>, <span class="variable language_">this</span>.<span class="property">Name</span>)</span><br><span class="line">    &#125;.<span class="title function_">bind</span>(<span class="variable language_">this</span>), <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> person = <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&#x27;Fred&#x27;</span>);</span><br><span class="line">person.<span class="title function_">sayHi</span>();</span><br><span class="line">person.<span class="title function_">delaySayHi</span>();</span><br></pre></td></tr></table></figure>
+<p>印出結果是<br><img src="/img/call%E3%80%81apply%E3%80%81bind%E6%96%87%E7%AB%A0-2.PNG"></p>
+<p>看起來好像有點亂、難理解，但其實仔細看，setTimeout函式的第一個參數就是函式，所以上述我們有介紹過bind用法，所以就是直接針對以下的函式：</p>
+<figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(<span class="string">&#x27;...Hi, My name is &#x27;</span>, this.Name)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述這個函式後面加上 <code>.bind(this)</code>，就完成bind(這個this就是指向這個Person物件，所以就能抓到Fred的值。<a href="/2023/10/27/%E6%90%9E%E6%87%82Javascript%E7%9A%84this/" title="搞懂Javascript的this">相關觀念可看這篇文章</a>)<br><em>(當然更直覺作法就是用ES6出現的箭頭函式，就能更直觀的解決，但這個不是我們今天要討論的重點，所以就先略過。)</em></p>
+<h2 id="bind用法觀念釐清"><a href="#bind用法觀念釐清" class="headerlink" title="bind用法觀念釐清"></a>bind用法觀念釐清</h2><p>接下來的一個範例，是我以前在學習bind時發生的錯誤觀念產生的寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> aaa = &#123;</span><br><span class="line">  <span class="attr">x</span>: <span class="number">123</span>,</span><br><span class="line">  <span class="attr">printX</span>: <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">x</span>;</span><br><span class="line">  &#125;.<span class="title function_">bind</span>(<span class="variable language_">this</span>), <span class="comment">//這是錯誤作法，會印出undefined</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(aaa.<span class="title function_">printX</span>())</span><br></pre></td></tr></table></figure>
+<p>本來以為多了一個bind(this)也應該沒事，但這個this其實是指向全域的Window物件，所以結果是印出<em>undefined</em>。<br>這個也幫助我釐清另一個觀念，物件裡面的this必須是包在傳統函式<code>function()&#123;&#125;</code>裡面的this才是指向物件本身。<br>所以如果要印出this.x的值，把<code>.bind(this)</code>刪掉即可</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> aaa = &#123;</span><br><span class="line">  <span class="attr">x</span>: <span class="number">123</span>,</span><br><span class="line">  <span class="attr">printX</span>: <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">x</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(aaa.<span class="title function_">printX</span>())</span><br></pre></td></tr></table></figure>
+<p>就能印出123的值了</p>
+<p>這時候，我們再將上述範例做一點延伸</p>
+<h2 id="綜合call、apply、call綁定物件"><a href="#綜合call、apply、call綁定物件" class="headerlink" title="綜合call、apply、call綁定物件"></a>綜合call、apply、call綁定物件</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> aaa = &#123;</span><br><span class="line">  <span class="attr">x</span>: <span class="number">123</span>,</span><br><span class="line">  <span class="attr">printX</span>: <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">x</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> showX = aaa.<span class="property">printX</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(aaa.<span class="title function_">printX</span>()); <span class="comment">//123</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">showX</span>()); <span class="comment">//undefined</span></span><br></pre></td></tr></table></figure>
+<p>將 <code>aaa.printX</code> 指派給showX 函式，然後用一般函式的方式呼叫showX，因為這個函式的this就是指向全域的Window物件，所以第9行是印出<em>undefined</em>。<br>這時候這篇文章的三大主角都能處理這個問題，程式碼如下</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(showX.<span class="title function_">call</span>(aaa)); <span class="comment">//123</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(showX.<span class="title function_">apply</span>(aaa)); <span class="comment">//123</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(showX.<span class="title function_">bind</span>(aaa)()); <span class="comment">//123</span></span><br></pre></td></tr></table></figure>
+<p>三個方式都印出我們要的結果，我們綁定了aaa物件並執行它。<br>要特別留意，bind後要再多一個括號()，代表要去執行該函式。</p>
 <hr>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>在做專案的時候常常因為追求語法閱讀與簡潔所以常會用到this，但往往沒有搞懂一些概念而造成意外的bug發生，如果再加上箭頭函式的觀念也沒有搞清楚的話，除錯起來也是很辛苦的，所以特別將this用法整理出來，也提醒自己要留意this的指向。</p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
+<li>call和apply都是執行函式，所以會return<strong>函式的結果</strong>；但bind就不同了，它只是單純綁定物件，return<strong>函式本身</strong>(也就是未執行)</li>
+<li>如果call和apply不綁定物件就填上null即可，就是會跟一般函式的執行結果一樣。(但我們一般不太會去綁null這件事啦，有點脫褲子放屁的感覺www)</li>
+<li>這三個用法常常會跟this扯上關係，所以也要清楚this的指向，才能在綁this的時候才能做正確的綁定。</li>
+</ol>
 ]]></content>
       <categories>
         <category>Javascript</category>
