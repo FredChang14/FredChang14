@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>使用Python串接Azure OpenAI服務</title>
+    <url>/2023/11/01/%E4%BD%BF%E7%94%A8Python%E4%B8%B2%E6%8E%A5Azure%20OpenAI%E6%9C%8D%E5%8B%99/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由於工作需求，我開始使用Azure AI平台。在網路上尋找相關教學時，在打Azure openai的api前所需要填入的參數不知道該往哪裡找。為了方便其他使用者，在這裡記錄一份詳細的指南，說明如何在Azure平台上迅速找到與Azure OpenAI相關的資訊。隨後，我將展示如何將這些資訊正確填入Python程式碼中，並成功執行。</p>
+<hr>
+<h2 id="環境介紹"><a href="#環境介紹" class="headerlink" title="環境介紹"></a>環境介紹</h2><p>Python 3.11<br>openai 0.28.1   (自行在IDE上安裝)</p>
+<blockquote>
+<p>須特別留意，Python一定要3.7.1版本以上，先前筆者一直使用3.7版本，即或資訊都填對，程式也都會發生錯誤</p>
+</blockquote>
+<h2 id="Azure-AI平台登入取得資訊並Python程式碼參數填寫步驟說明"><a href="#Azure-AI平台登入取得資訊並Python程式碼參數填寫步驟說明" class="headerlink" title="Azure AI平台登入取得資訊並Python程式碼參數填寫步驟說明"></a>Azure AI平台登入取得資訊並Python程式碼參數填寫步驟說明</h2><ol>
+<li><p>到這個網址進行登入 <a href="https://azure.microsoft.com/zh-tw/solutions/ai">https://azure.microsoft.com/zh-tw/solutions/ai</a> 後，連至主控台<br>並點選Azure OpenAI(如沒有出現在主控台，可直接用上方搜尋欄輸入Azure OpenAI送出即可)<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-1.PNG"></p>
+</li>
+<li><p>點選之前有創建過的GPT模型名稱<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-2.PNG"></p>
+</li>
+<li><p>點選左側「模型部署」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-3.PNG"></p>
+</li>
+<li><p>再點選「管理部署」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-4.PNG"></p>
+</li>
+<li><p>就會連至Azure OpenAIO Studio介面，點選左側選單「聊天」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-5.PNG"></p>
+</li>
+<li><p>確認右側設定是否就是我們先前部署的部署名稱 (就是確認服務的意思)，確認沒問題，點選「檢視程式碼」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-6.PNG"></p>
+</li>
+<li><p>就會看到提供的Python範例程式碼<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-7.PNG"><br>將全部程式碼複製下來到你的IDE上</p>
+ <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment">#Note: The openai-python library support for Azure OpenAI is in preview.</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> openai</span><br><span class="line">openai.api_type = <span class="string">&quot;azure&quot;</span></span><br><span class="line">openai.api_base = <span class="string">&quot;https://gpt-xxx.openai.azure.com/&quot;</span></span><br><span class="line">openai.api_version = <span class="string">&quot;2023-07-01-preview&quot;</span></span><br><span class="line">openai.api_key = os.getenv(<span class="string">&quot;OPENAI_API_KEY&quot;</span>)</span><br><span class="line"></span><br><span class="line">response = openai.ChatCompletion.create(</span><br><span class="line">engine=<span class="string">&quot;gpt35-xxx&quot;</span>,</span><br><span class="line">messages = [&#123;<span class="string">&quot;role&quot;</span>:<span class="string">&quot;system&quot;</span>,<span class="string">&quot;content&quot;</span>:<span class="string">&quot;You are an AI assistant that helps people find information.&quot;</span>&#125;],</span><br><span class="line">temperature=<span class="number">0.7</span>,</span><br><span class="line">max_tokens=<span class="number">800</span>,</span><br><span class="line">top_p=<span class="number">0.95</span>,</span><br><span class="line">frequency_penalty=<span class="number">0</span>,</span><br><span class="line">presence_penalty=<span class="number">0</span>,</span><br><span class="line">stop=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>這時候我們會需要API Key，連回至<a href="https://portal.azure.com/">https://portal.azure.com/</a> ，回到本文1~2步驟，選到你的Azure OpenAI服務，接著點選左側「金鑰與端點」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-8.PNG"></p>
+</li>
+<li><p>點選金鑰1或金鑰2複製都可以，複製下來貼上到第7步驟程式碼的<strong>openai.api_key</strong>的值<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-9.PNG"></p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">openai.api_key = <span class="string">&quot;XXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> <span class="comment"># 替換成複製下來的Key</span></span><br></pre></td></tr></table></figure>
+<p>並印出GPT回應內容</p>
+<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(response.choices[<span class="number">0</span>].message.content)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>執行程式，如果能成功印出內容就代表串接成功了，像筆者是取得以下回應，每人會不同<br><em>Hello! I am an AI assistant here to help you find information. What can I help you with today?</em></p>
+</li>
+</ol>
+<hr>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>對於一開始接觸Azure AI的人可能有時候需要的資訊會找不太到，所以紀錄一下，讓未來的自己和新接觸的人可以看到這篇記錄快速完成串接。</p>
+]]></content>
+      <categories>
+        <category>AI</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>AI</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何在Nuxt3使用vue-social-sharing套件</title>
     <url>/2023/10/27/%E5%A6%82%E4%BD%95%E5%9C%A8Nuxt3%E4%BD%BF%E7%94%A8vue-social-sharing%E5%A5%97%E4%BB%B6/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>vue-social-sharing是用來透過社群軟體分享網頁內容的一個套件，例如：Facebook、Line 社群軟體，在npm有高手寫了一個vue-social-sharing套件，在Vue和Nuxt2可以成功用說明成功安裝並使用，但在Nuxt3會引入失敗，所以這一篇文章就來實現如何在Nuxt3將此套件引入並實作相關邏輯出來。</p>
@@ -90,52 +136,6 @@
       </tags>
   </entry>
   <entry>
-    <title>使用Python串接Azure OpenAI服務</title>
-    <url>/2023/11/01/%E4%BD%BF%E7%94%A8Python%E4%B8%B2%E6%8E%A5Azure%20OpenAI%E6%9C%8D%E5%8B%99/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由於工作需求，我開始使用Azure AI平台。在網路上尋找相關教學時，在打Azure openai的api前所需要填入的參數不知道該往哪裡找。為了方便其他使用者，在這裡記錄一份詳細的指南，說明如何在Azure平台上迅速找到與Azure OpenAI相關的資訊。隨後，我將展示如何將這些資訊正確填入Python程式碼中，並成功執行。</p>
-<hr>
-<h2 id="環境介紹"><a href="#環境介紹" class="headerlink" title="環境介紹"></a>環境介紹</h2><p>Python 3.11<br>openai 0.28.1   (自行在IDE上安裝)</p>
-<blockquote>
-<p>須特別留意，Python一定要3.7.1版本以上，先前筆者一直使用3.7版本，即或資訊都填對，程式也都會發生錯誤</p>
-</blockquote>
-<h2 id="Azure-AI平台登入取得資訊並Python程式碼參數填寫步驟說明"><a href="#Azure-AI平台登入取得資訊並Python程式碼參數填寫步驟說明" class="headerlink" title="Azure AI平台登入取得資訊並Python程式碼參數填寫步驟說明"></a>Azure AI平台登入取得資訊並Python程式碼參數填寫步驟說明</h2><ol>
-<li><p>到這個網址進行登入 <a href="https://azure.microsoft.com/zh-tw/solutions/ai">https://azure.microsoft.com/zh-tw/solutions/ai</a> 後，連至主控台<br>並點選Azure OpenAI(如沒有出現在主控台，可直接用上方搜尋欄輸入Azure OpenAI送出即可)<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-1.PNG"></p>
-</li>
-<li><p>點選之前有創建過的GPT模型名稱<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-2.PNG"></p>
-</li>
-<li><p>點選左側「模型部署」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-3.PNG"></p>
-</li>
-<li><p>再點選「管理部署」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-4.PNG"></p>
-</li>
-<li><p>就會連至Azure OpenAIO Studio介面，點選左側選單「聊天」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-5.PNG"></p>
-</li>
-<li><p>確認右側設定是否就是我們先前部署的部署名稱 (就是確認服務的意思)，確認沒問題，點選「檢視程式碼」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-6.PNG"></p>
-</li>
-<li><p>就會看到提供的Python範例程式碼<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-7.PNG"><br>將全部程式碼複製下來到你的IDE上</p>
- <figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="comment">#Note: The openai-python library support for Azure OpenAI is in preview.</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> openai</span><br><span class="line">openai.api_type = <span class="string">&quot;azure&quot;</span></span><br><span class="line">openai.api_base = <span class="string">&quot;https://gpt-xxx.openai.azure.com/&quot;</span></span><br><span class="line">openai.api_version = <span class="string">&quot;2023-07-01-preview&quot;</span></span><br><span class="line">openai.api_key = os.getenv(<span class="string">&quot;OPENAI_API_KEY&quot;</span>)</span><br><span class="line"></span><br><span class="line">response = openai.ChatCompletion.create(</span><br><span class="line">engine=<span class="string">&quot;gpt35-xxx&quot;</span>,</span><br><span class="line">messages = [&#123;<span class="string">&quot;role&quot;</span>:<span class="string">&quot;system&quot;</span>,<span class="string">&quot;content&quot;</span>:<span class="string">&quot;You are an AI assistant that helps people find information.&quot;</span>&#125;],</span><br><span class="line">temperature=<span class="number">0.7</span>,</span><br><span class="line">max_tokens=<span class="number">800</span>,</span><br><span class="line">top_p=<span class="number">0.95</span>,</span><br><span class="line">frequency_penalty=<span class="number">0</span>,</span><br><span class="line">presence_penalty=<span class="number">0</span>,</span><br><span class="line">stop=<span class="literal">None</span>)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>這時候我們會需要API Key，連回至<a href="https://portal.azure.com/">https://portal.azure.com/</a> ，回到本文1~2步驟，選到你的Azure OpenAI服務，接著點選左側「金鑰與端點」<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-8.PNG"></p>
-</li>
-<li><p>點選金鑰1或金鑰2複製都可以，複製下來貼上到第7步驟程式碼的<strong>openai.api_key</strong>的值<br><img src="/img/Python%E4%B8%B2%E6%8E%A5Azure-9.PNG"></p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line">openai.api_key = <span class="string">&quot;XXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> <span class="comment"># 替換成複製下來的Key</span></span><br></pre></td></tr></table></figure>
-<p>並印出GPT回應內容</p>
-<figure class="highlight py"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(response.choices[<span class="number">0</span>].message.content)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>執行程式，如果能成功印出內容就代表串接成功了，像筆者是取得以下回應，每人會不同<br><em>Hello! I am an AI assistant here to help you find information. What can I help you with today?</em></p>
-</li>
-</ol>
-<hr>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>對於一開始接觸Azure AI的人可能有時候需要的資訊會找不太到，所以紀錄一下，讓未來的自己和新接觸的人可以看到這篇記錄快速完成串接。</p>
-]]></content>
-      <categories>
-        <category>AI</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>AI</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>探討Javascript的Hoisting</title>
     <url>/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。</p>
@@ -160,40 +160,6 @@
 <li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
 <li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
 </ol>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>用for迴圈執行setTimeout方法印出1~5有哪些解法</title>
-    <url>/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？</p>
-<h2 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h2><p>使用var不做任何處理，想取得第一秒時取得1、第二秒取得2、…、第五秒取得5</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>卻發現第一秒卻取得5、第二秒也是取得5，一直到第五秒也是取得5。為什麼會發生這樣的問題？因為i變數是用var宣告的，這個變數已經跑到5，並且已經污染到全域了。<br>可以在這段程式碼後面是者印出i來看看，我們可以取得迴圈內的變數i的值console.log(i)，會發現印出5</p>
-<p>我們一般常會用的解法可能是把var改為let就好了</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>就能拿到預期的結果，第一秒時取得1、第二秒取得2、…、第五秒取得5。</p>
-<p>現在我就只想用var不想用let來實驗有沒有辦法得到上述需求</p>
-<hr>
-<h2 id="解法1：使用setTimeout傳入參數方式處理"><a href="#解法1：使用setTimeout傳入參數方式處理" class="headerlink" title="解法1：使用setTimeout傳入參數方式處理"></a>解法1：使用setTimeout傳入參數方式處理</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>setTimeout我們一般使用可能只會傳兩個參數，但setTimeout可以傳入第三個參數，如此一來就不會被全域的問題影響到i值</p>
-<blockquote>
-<p>參考：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout">MDN文件：setTimeout</a></p>
-</blockquote>
-<h2 id="解法2：使用bind方式處理"><a href="#解法2：使用bind方式處理" class="headerlink" title="解法2：使用bind方式處理"></a>解法2：使用bind方式處理</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">  &#125;.<span class="title function_">bind</span>(<span class="literal">null</span>, i), i * <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>這個方式是用bind方式，因為沒有要綁任何對象，所以bind方法第一個參數填上null即可，但二個參數就要填上setTimeout傳入的參數i，如此一來也能達到需求</p>
-<blockquote>
-<p>參考：<a href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">MDN文件：bind</a></p>
-</blockquote>
-<h2 id="解法3：使用閉包-closure"><a href="#解法3：使用閉包-closure" class="headerlink" title="解法3：使用閉包(closure)"></a>解法3：使用閉包(closure)</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  (<span class="keyword">function</span>(<span class="params">x</span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(x)</span><br><span class="line">    &#125;, x * <span class="number">1000</span>)</span><br><span class="line">  &#125;)(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>透過傳入i給立即函式的方式，立即函式裡面用x變數將i變數的值保存下來，進而達到預期效果。<br>註：閉包要有巢狀的function才算是閉包哦</p>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>以上三種方式就是今天限制自己不用let方式，只使用var來達到預期的結果。不過在正式專案中，還是推薦用let的方式來做這個需求會更簡潔，也更好懂，像筆者的一些專案是不會看到任何var的蹤影。</p>
 ]]></content>
       <categories>
         <category>Javascript</category>
@@ -280,6 +246,40 @@
 <li>如果call和apply不綁定物件就填上null即可，就是會跟一般函式的執行結果一樣。(但我們一般不太會去綁null，有點脫褲子放屁的感覺www)</li>
 <li>這三個用法常常會跟this扯上關係，是用來改變原函式this的指向。</li>
 </ol>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用for迴圈執行setTimeout方法印出1~5有哪些解法</title>
+    <url>/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們也一個需求是我就是不要用let，一定選擇用var來作為解決方案，那該如何解決這個問題呢？</p>
+<h2 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h2><p>使用var不做任何處理，想取得第一秒時取得1、第二秒取得2、…、第五秒取得5</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>卻發現第一秒卻取得5、第二秒也是取得5，一直到第五秒也是取得5。為什麼會發生這樣的問題？因為i變數是用var宣告的，這個變數已經跑到5，並且已經污染到全域了。<br>可以在這段程式碼後面是者印出i來看看，我們可以取得迴圈內的變數i的值console.log(i)，會發現印出5</p>
+<p>我們一般常會用的解法可能是把var改為let就好了</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就能拿到預期的結果，第一秒時取得1、第二秒取得2、…、第五秒取得5。</p>
+<p>現在我就只想用var不想用let來實驗有沒有辦法得到上述需求</p>
+<hr>
+<h2 id="解法1：使用setTimeout傳入參數方式處理"><a href="#解法1：使用setTimeout傳入參數方式處理" class="headerlink" title="解法1：使用setTimeout傳入參數方式處理"></a>解法1：使用setTimeout傳入參數方式處理</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>setTimeout我們一般使用可能只會傳兩個參數，但setTimeout可以傳入第三個參數，如此一來就不會被全域的問題影響到i值</p>
+<blockquote>
+<p>參考：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout">MDN文件：setTimeout</a></p>
+</blockquote>
+<h2 id="解法2：使用bind方式處理"><a href="#解法2：使用bind方式處理" class="headerlink" title="解法2：使用bind方式處理"></a>解法2：使用bind方式處理</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">  &#125;.<span class="title function_">bind</span>(<span class="literal">null</span>, i), i * <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這個方式是用bind方式，因為沒有要綁任何對象，所以bind方法第一個參數填上null即可，但二個參數就要填上setTimeout傳入的參數i，如此一來也能達到需求</p>
+<blockquote>
+<p>參考：<a href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">MDN文件：bind</a></p>
+</blockquote>
+<h2 id="解法3：使用閉包-closure"><a href="#解法3：使用閉包-closure" class="headerlink" title="解法3：使用閉包(closure)"></a>解法3：使用閉包(closure)</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  (<span class="keyword">function</span>(<span class="params">x</span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(x)</span><br><span class="line">    &#125;, x * <span class="number">1000</span>)</span><br><span class="line">  &#125;)(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>透過傳入i給立即函式的方式，立即函式裡面用x變數將i變數的值保存下來，進而達到預期效果。<br>註：閉包要有巢狀的function才算是閉包哦</p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>以上三種方式就是今天限制自己不用let方式，只使用var來達到預期的結果。不過在正式專案中，還是推薦用let的方式來做這個需求會更簡潔，也更好懂，像筆者的一些專案是不會看到任何var的蹤影。</p>
 ]]></content>
       <categories>
         <category>Javascript</category>
