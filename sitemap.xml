@@ -115,13 +115,6 @@
   </url>
   
   <url>
-    <loc>https://fredchang14.github.io/tags/Javascript/</loc>
-    <lastmod>2023-11-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://fredchang14.github.io/tags/Vue/</loc>
     <lastmod>2023-11-06</lastmod>
     <changefreq>weekly</changefreq>
@@ -129,14 +122,21 @@
   </url>
   
   <url>
-    <loc>https://fredchang14.github.io/tags/Nuxt/</loc>
+    <loc>https://fredchang14.github.io/tags/Vite/</loc>
     <lastmod>2023-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://fredchang14.github.io/tags/Vite/</loc>
+    <loc>https://fredchang14.github.io/tags/Javascript/</loc>
+    <lastmod>2023-11-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/tags/Nuxt/</loc>
     <lastmod>2023-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

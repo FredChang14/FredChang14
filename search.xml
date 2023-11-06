@@ -47,44 +47,6 @@
       </tags>
   </entry>
   <entry>
-    <title>如何在Nuxt3使用vue-social-sharing套件</title>
-    <url>/2023/10/27/%E5%A6%82%E4%BD%95%E5%9C%A8Nuxt3%E4%BD%BF%E7%94%A8vue-social-sharing%E5%A5%97%E4%BB%B6/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>vue-social-sharing是用來透過社群軟體分享網頁內容的一個套件，例如：Facebook、Line 社群軟體，在npm有高手寫了一個vue-social-sharing套件，在Vue和Nuxt2可以成功用說明成功安裝並使用，但在Nuxt3會引入失敗，所以這一篇文章就來實現如何在Nuxt3將此套件引入並實作相關邏輯出來。</p>
-<h2 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h2><ol>
-<li><p>先進行套件安裝 npm install — save vue-social-sharing@next</p>
-</li>
-<li><p>嘗試依據npm作者提供之方式引入，在nuxt.config.ts檔案內寫上modules屬性內寫入套件名。</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtConfig</span>(&#123;</span><br><span class="line">    <span class="attr">modules</span>: [</span><br><span class="line">        <span class="string">&#x27;vue-social-sharing/nuxt&#x27;</span></span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>但無法順利引用，判斷套件可使用在Nuxt2，無法使用在Nuxt3。</p>
-<ol start="3">
-<li><p>解決方法：使用plungins方式引用此套件</p>
-<p> (1)於plugins內新增socialSharing.js檔案，內容如下</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">VueSocialSharing</span> <span class="keyword">from</span> <span class="string">&quot;vue-social-sharing&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtPlugin</span>(<span class="function"><span class="params">nuxtApp</span> =&gt;</span> &#123;</span><br><span class="line">    nuxtApp.<span class="property">vueApp</span>.<span class="title function_">use</span>(<span class="title class_">VueSocialSharing</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p> (2)在components資料夾內新增SocialShare.vue檔，內容如下</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">const</span> sharing = <span class="title function_">ref</span>(&#123;</span><br><span class="line">    <span class="attr">url</span>: <span class="string">&quot;https://github.com/nicolasbeauvais/vue-social-sharing?ref=morioh.com&amp;utm_source=morioh.com&quot;</span>,</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&quot;Say hi to Vite! A brand new, extremely fast development setup for Vue.&quot;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&#x27;This week, I’d like to introduce you to &quot;Vite&quot;, which means &quot;Fast&quot;. It’s a brand new development setup created by Evan You.&#x27;</span>,</span><br><span class="line">    <span class="attr">quote</span>: <span class="string">&quot;The hot reload is so fast it&#x27;s near instant. - Evan You&quot;</span>,</span><br><span class="line">    <span class="attr">hashtags</span>: <span class="string">&quot;vuejs,vite,javascript&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> networks = <span class="title function_">reactive</span>([</span><br><span class="line">    &#123; <span class="attr">network</span>: <span class="string">&quot;facebook&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;Facebook&quot;</span>, <span class="attr">icon</span>: <span class="string">&quot;fab fah fa-lg fa-facebook-f&quot;</span>, <span class="attr">color</span>: <span class="string">&quot;#1877f2&quot;</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">network</span>: <span class="string">&quot;line&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;Line&quot;</span>, <span class="attr">icon</span>: <span class="string">&quot;fab fah fa-lg fa-line&quot;</span>, <span class="attr">color</span>: <span class="string">&quot;#00c300&quot;</span> &#125;,</span><br><span class="line">]);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">ShareNetwork</span> <span class="attr">class</span>=<span class="string">&quot;float-right&quot;</span> <span class="attr">v-for</span>=<span class="string">&quot;network in networks&quot;</span> <span class="attr">:network</span>=<span class="string">&quot;network.network&quot;</span> <span class="attr">:key</span>=<span class="string">&quot;network.network&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">:style</span>=<span class="string">&quot;&#123; backgroundColor: network.color &#125;&quot;</span> <span class="attr">:url</span>=<span class="string">&quot;sharing.url&quot;</span> <span class="attr">:title</span>=<span class="string">&quot;sharing.title&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">:description</span>=<span class="string">&quot;sharing.description&quot;</span> <span class="attr">:quote</span>=<span class="string">&quot;sharing.quote&quot;</span> <span class="attr">:hashtags</span>=<span class="string">&quot;sharing.hashtags&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">:twitterUser</span>=<span class="string">&quot;sharing.twitterUser&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">:class</span>=<span class="string">&quot;network.icon&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123; network.name &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">ShareNetwork</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
-
-<p> (3) 如有多個分享社群，因Nuxt server render問題，會發生只有第一個社群媒體圖示會正常呈現出來，則引入上述步驟時的component時應使用defineAsyncComponent非同步引入方式，script標籤內容如下</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">SocialShare</span> = <span class="title function_">defineAsyncComponent</span>(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;../components/SocialShare.vue&quot;</span>));</span><br></pre></td></tr></table></figure>
-
-<p> 並在template使用ClientOnly方式，讓該component只在client端render出來，內容如下</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;<span class="title class_">ClientOnly</span>&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">template</span> #<span class="attr">default</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">SocialShare</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">template</span> #<span class="attr">fallback</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">p</span>&gt;</span>Loading...<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">&lt;/<span class="title class_">ClientOnly</span>&gt;</span><br></pre></td></tr></table></figure>
-
-<p> (4) 成功引入！</p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-        <tag>Vue</tag>
-        <tag>Nuxt</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>如何將Vue的composable和component經由Vite打包至npm平台，讓其他人可以載入使用</title>
     <url>/2023/11/06/%E5%A6%82%E4%BD%95%E5%B0%87Vue%E7%9A%84composable%E5%92%8Ccomponent%E7%B6%93%E7%94%B1Vite%E6%89%93%E5%8C%85%E8%87%B3npm%E5%B9%B3%E5%8F%B0%EF%BC%8C%E8%AE%93%E5%85%B6%E4%BB%96%E4%BA%BA%E5%8F%AF%E4%BB%A5%E8%BC%89%E5%85%A5%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>想把團隊會重複使用到的composable和component打包至<a href="https://www.npmjs.com/">npm平台</a>後重複使用，像是在Vue.js世界常遇到的VueUse、ElementPlus是如何做到套件打包，上網查相關資料將實作筆記整理出來。</p>
@@ -142,7 +104,7 @@
 </li>
 <li><p>如果發布前想先試試看套件能否順利載入可以用以下指令</p>
 <figure class="highlight apache"><table><tr><td class="code"><pre><span class="line"><span class="attribute">npm</span> link<span class="meta"> [套件名]</span></span><br></pre></td></tr></table></figure>
-<p>所以如果像示範的則填入npm link fred-vue-library<br>可藉由此指令，在本地引入看正不正常</p>
+<p>所以如果像示範的則填入npm link fred-vue-library<br>可藉由此指令，在本地引入看正不正常。<br><strong>需特別注意這個有cache問題，所以還是npm publish發布出去引入看結果最準</strong></p>
 </li>
 <li><p>發布</p>
 <figure class="highlight coffeescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">npm</span> publish</span><br></pre></td></tr></table></figure>
@@ -176,9 +138,47 @@
         <category>Javascript</category>
       </categories>
       <tags>
-        <tag>Javascript</tag>
         <tag>Vue</tag>
         <tag>Vite</tag>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何在Nuxt3使用vue-social-sharing套件</title>
+    <url>/2023/10/27/%E5%A6%82%E4%BD%95%E5%9C%A8Nuxt3%E4%BD%BF%E7%94%A8vue-social-sharing%E5%A5%97%E4%BB%B6/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>vue-social-sharing是用來透過社群軟體分享網頁內容的一個套件，例如：Facebook、Line 社群軟體，在npm有高手寫了一個vue-social-sharing套件，在Vue和Nuxt2可以成功用說明成功安裝並使用，但在Nuxt3會引入失敗，所以這一篇文章就來實現如何在Nuxt3將此套件引入並實作相關邏輯出來。</p>
+<h2 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h2><ol>
+<li><p>先進行套件安裝 npm install — save vue-social-sharing@next</p>
+</li>
+<li><p>嘗試依據npm作者提供之方式引入，在nuxt.config.ts檔案內寫上modules屬性內寫入套件名。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtConfig</span>(&#123;</span><br><span class="line">    <span class="attr">modules</span>: [</span><br><span class="line">        <span class="string">&#x27;vue-social-sharing/nuxt&#x27;</span></span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>但無法順利引用，判斷套件可使用在Nuxt2，無法使用在Nuxt3。</p>
+<ol start="3">
+<li><p>解決方法：使用plungins方式引用此套件</p>
+<p> (1)於plugins內新增socialSharing.js檔案，內容如下</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">VueSocialSharing</span> <span class="keyword">from</span> <span class="string">&quot;vue-social-sharing&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtPlugin</span>(<span class="function"><span class="params">nuxtApp</span> =&gt;</span> &#123;</span><br><span class="line">    nuxtApp.<span class="property">vueApp</span>.<span class="title function_">use</span>(<span class="title class_">VueSocialSharing</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p> (2)在components資料夾內新增SocialShare.vue檔，內容如下</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">const</span> sharing = <span class="title function_">ref</span>(&#123;</span><br><span class="line">    <span class="attr">url</span>: <span class="string">&quot;https://github.com/nicolasbeauvais/vue-social-sharing?ref=morioh.com&amp;utm_source=morioh.com&quot;</span>,</span><br><span class="line">    <span class="attr">title</span>: <span class="string">&quot;Say hi to Vite! A brand new, extremely fast development setup for Vue.&quot;</span>,</span><br><span class="line">    <span class="attr">description</span>: <span class="string">&#x27;This week, I’d like to introduce you to &quot;Vite&quot;, which means &quot;Fast&quot;. It’s a brand new development setup created by Evan You.&#x27;</span>,</span><br><span class="line">    <span class="attr">quote</span>: <span class="string">&quot;The hot reload is so fast it&#x27;s near instant. - Evan You&quot;</span>,</span><br><span class="line">    <span class="attr">hashtags</span>: <span class="string">&quot;vuejs,vite,javascript&quot;</span>,</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">const</span> networks = <span class="title function_">reactive</span>([</span><br><span class="line">    &#123; <span class="attr">network</span>: <span class="string">&quot;facebook&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;Facebook&quot;</span>, <span class="attr">icon</span>: <span class="string">&quot;fab fah fa-lg fa-facebook-f&quot;</span>, <span class="attr">color</span>: <span class="string">&quot;#1877f2&quot;</span> &#125;,</span><br><span class="line">    &#123; <span class="attr">network</span>: <span class="string">&quot;line&quot;</span>, <span class="attr">name</span>: <span class="string">&quot;Line&quot;</span>, <span class="attr">icon</span>: <span class="string">&quot;fab fah fa-lg fa-line&quot;</span>, <span class="attr">color</span>: <span class="string">&quot;#00c300&quot;</span> &#125;,</span><br><span class="line">]);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">ShareNetwork</span> <span class="attr">class</span>=<span class="string">&quot;float-right&quot;</span> <span class="attr">v-for</span>=<span class="string">&quot;network in networks&quot;</span> <span class="attr">:network</span>=<span class="string">&quot;network.network&quot;</span> <span class="attr">:key</span>=<span class="string">&quot;network.network&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">:style</span>=<span class="string">&quot;&#123; backgroundColor: network.color &#125;&quot;</span> <span class="attr">:url</span>=<span class="string">&quot;sharing.url&quot;</span> <span class="attr">:title</span>=<span class="string">&quot;sharing.title&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">:description</span>=<span class="string">&quot;sharing.description&quot;</span> <span class="attr">:quote</span>=<span class="string">&quot;sharing.quote&quot;</span> <span class="attr">:hashtags</span>=<span class="string">&quot;sharing.hashtags&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">:twitterUser</span>=<span class="string">&quot;sharing.twitterUser&quot;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">i</span> <span class="attr">:class</span>=<span class="string">&quot;network.icon&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123; network.name &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">ShareNetwork</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+
+<p> (3) 如有多個分享社群，因Nuxt server render問題，會發生只有第一個社群媒體圖示會正常呈現出來，則引入上述步驟時的component時應使用defineAsyncComponent非同步引入方式，script標籤內容如下</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="title class_">SocialShare</span> = <span class="title function_">defineAsyncComponent</span>(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&quot;../components/SocialShare.vue&quot;</span>));</span><br></pre></td></tr></table></figure>
+
+<p> 並在template使用ClientOnly方式，讓該component只在client端render出來，內容如下</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;<span class="title class_">ClientOnly</span>&gt;</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">template</span> #<span class="attr">default</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">SocialShare</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;<span class="name">template</span> #<span class="attr">fallback</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">p</span>&gt;</span>Loading...<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;/<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line">&lt;/<span class="title class_">ClientOnly</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p> (4) 成功引入！</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Vue</tag>
+        <tag>Javascript</tag>
+        <tag>Nuxt</tag>
       </tags>
   </entry>
   <entry>
@@ -261,8 +261,8 @@
         <category>Javascript</category>
       </categories>
       <tags>
-        <tag>Javascript</tag>
         <tag>Vue</tag>
+        <tag>Javascript</tag>
       </tags>
   </entry>
   <entry>
@@ -286,6 +286,40 @@
 <p>這個範例可以發現第2行的this印出來是Person空白物件，不是一般物件。</p>
 <hr>
 <h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>在做專案的時候常常因為追求語法閱讀與簡潔所以常會用到this，但往往沒有搞懂一些概念而造成意外的bug發生，如果再加上箭頭函式的觀念也沒有搞清楚的話，除錯起來也是很辛苦的，所以特別將this用法整理出來，也提醒自己要留意this的指向。</p>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用for迴圈執行setTimeout方法印出1~5有哪些解法</title>
+    <url>/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們來挑戰不用let，選擇用var來作為解決方案，那該如何解決這個問題呢？</p>
+<h2 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h2><p>使用var不做任何處理，想取得第一秒時取得1、第二秒取得2、…、第五秒取得5</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>卻發現第一秒卻取得5、第二秒也是取得5，一直到第五秒也是取得5。<br>為什麼會發生這樣的問題？因為setTimeout屬於非同步函式，不會馬上執行到(會先被放在queue裡面)，加上i變數是用var宣告的，進行持續累加，累加超過5跳出迴圈，要注意var是全域變數，已經污染到全域了。<br>可以在這段程式碼後面是者印出i來看看，我們可以取得迴圈內的變數i的值console.log(i)，會發現印出5</p>
+<p>我們一般常會用的解法可能是把var改為let就好了</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就能拿到預期的結果，第一秒時取得1、第二秒取得2、…、第五秒取得5。</p>
+<p>現在我就只想用var不想用let來實驗有沒有辦法得到上述需求</p>
+<hr>
+<h2 id="解法1：使用setTimeout傳入參數方式處理"><a href="#解法1：使用setTimeout傳入參數方式處理" class="headerlink" title="解法1：使用setTimeout傳入參數方式處理"></a>解法1：使用setTimeout傳入參數方式處理</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>setTimeout我們一般使用可能只會傳兩個參數，但setTimeout可以傳入第三個參數，如此一來就不會被全域的問題影響到i值</p>
+<blockquote>
+<p>參考：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout">MDN文件：setTimeout</a></p>
+</blockquote>
+<h2 id="解法2：使用bind方式處理"><a href="#解法2：使用bind方式處理" class="headerlink" title="解法2：使用bind方式處理"></a>解法2：使用bind方式處理</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">  &#125;.<span class="title function_">bind</span>(<span class="literal">null</span>, i), i * <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這個方式是用bind方式，因為沒有要綁任何對象，所以bind方法第一個參數填上null即可，但二個參數就要填上setTimeout傳入的參數i，如此一來也能達到需求</p>
+<blockquote>
+<p>參考：<a href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">MDN文件：bind</a></p>
+</blockquote>
+<h2 id="解法3：使用閉包-closure"><a href="#解法3：使用閉包-closure" class="headerlink" title="解法3：使用閉包(closure)"></a>解法3：使用閉包(closure)</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  (<span class="keyword">function</span>(<span class="params">x</span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(x)</span><br><span class="line">    &#125;, x * <span class="number">1000</span>)</span><br><span class="line">  &#125;)(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>透過傳入i給立即函式的方式，立即函式裡面用x變數將i變數的值保存下來，進而達到預期效果。<br>註：閉包要有巢狀的function才算是閉包哦</p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>以上三種方式就是今天限制自己不用let方式，只使用var來達到預期的結果。不過在正式專案中，還是推薦用let的方式來做這個需求會更簡潔，也更好懂，像筆者的一些專案是不會看到任何var的蹤影。</p>
 ]]></content>
       <categories>
         <category>Javascript</category>
@@ -343,40 +377,6 @@
 <li>如果call和apply不綁定物件就填上null即可，就是會跟一般函式的執行結果一樣。(但我們一般不太會去綁null，有點脫褲子放屁的感覺www)</li>
 <li>這三個用法常常會跟this扯上關係，是用來改變原函式this的指向。</li>
 </ol>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>用for迴圈執行setTimeout方法印出1~5有哪些解法</title>
-    <url>/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們來挑戰不用let，選擇用var來作為解決方案，那該如何解決這個問題呢？</p>
-<h2 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h2><p>使用var不做任何處理，想取得第一秒時取得1、第二秒取得2、…、第五秒取得5</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>卻發現第一秒卻取得5、第二秒也是取得5，一直到第五秒也是取得5。<br>為什麼會發生這樣的問題？因為setTimeout屬於非同步函式，不會馬上執行到(會先被放在queue裡面)，加上i變數是用var宣告的，進行持續累加，累加超過5跳出迴圈，要注意var是全域變數，已經污染到全域了。<br>可以在這段程式碼後面是者印出i來看看，我們可以取得迴圈內的變數i的值console.log(i)，會發現印出5</p>
-<p>我們一般常會用的解法可能是把var改為let就好了</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>就能拿到預期的結果，第一秒時取得1、第二秒取得2、…、第五秒取得5。</p>
-<p>現在我就只想用var不想用let來實驗有沒有辦法得到上述需求</p>
-<hr>
-<h2 id="解法1：使用setTimeout傳入參數方式處理"><a href="#解法1：使用setTimeout傳入參數方式處理" class="headerlink" title="解法1：使用setTimeout傳入參數方式處理"></a>解法1：使用setTimeout傳入參數方式處理</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>setTimeout我們一般使用可能只會傳兩個參數，但setTimeout可以傳入第三個參數，如此一來就不會被全域的問題影響到i值</p>
-<blockquote>
-<p>參考：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout">MDN文件：setTimeout</a></p>
-</blockquote>
-<h2 id="解法2：使用bind方式處理"><a href="#解法2：使用bind方式處理" class="headerlink" title="解法2：使用bind方式處理"></a>解法2：使用bind方式處理</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">  &#125;.<span class="title function_">bind</span>(<span class="literal">null</span>, i), i * <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>這個方式是用bind方式，因為沒有要綁任何對象，所以bind方法第一個參數填上null即可，但二個參數就要填上setTimeout傳入的參數i，如此一來也能達到需求</p>
-<blockquote>
-<p>參考：<a href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">MDN文件：bind</a></p>
-</blockquote>
-<h2 id="解法3：使用閉包-closure"><a href="#解法3：使用閉包-closure" class="headerlink" title="解法3：使用閉包(closure)"></a>解法3：使用閉包(closure)</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  (<span class="keyword">function</span>(<span class="params">x</span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(x)</span><br><span class="line">    &#125;, x * <span class="number">1000</span>)</span><br><span class="line">  &#125;)(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>透過傳入i給立即函式的方式，立即函式裡面用x變數將i變數的值保存下來，進而達到預期效果。<br>註：閉包要有巢狀的function才算是閉包哦</p>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>以上三種方式就是今天限制自己不用let方式，只使用var來達到預期的結果。不過在正式專案中，還是推薦用let的方式來做這個需求會更簡潔，也更好懂，像筆者的一些專案是不會看到任何var的蹤影。</p>
 ]]></content>
       <categories>
         <category>Javascript</category>
