@@ -169,11 +169,12 @@
 <li><p>呈現成果<br><img src="/img/vite%E6%89%93%E5%8C%85-2.PNG"></p>
 </li>
 <li><p>(補充)使用全域引入component<br>main.js調整如下</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">App</span> <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fred-vue-library/style.css&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">FredVueLibrary</span> <span class="keyword">from</span> <span class="string">&quot;fred-vue-library&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="title class_">App</span>)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">use</span>(<span class="title class_">FredVueLibrary</span>).<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
-</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; createApp &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">App</span> <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fred-vue-library/style.css&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="title class_">FredVueLibrary</span> <span class="keyword">from</span> <span class="string">&quot;fred-vue-library&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(<span class="title class_">App</span>)</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">use</span>(<span class="title class_">FredVueLibrary</span>).<span class="title function_">mount</span>(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
 <p>然後把App.vue區域引入component也拿掉，css檔也拿掉，更改如下</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script setup&gt;</span><br><span class="line"><span class="keyword">import</span> &#123; useMouse &#125; <span class="keyword">from</span> <span class="string">&quot;fred-vue-library&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> &#123; x, y &#125; = <span class="title function_">useMouse</span>();</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;<span class="name">FButton</span> <span class="attr">size</span>=<span class="string">&quot;large&quot;</span> <span class="attr">type</span>=<span class="string">&quot;primary&quot;</span>&gt;</span>測試按鈕<span class="tag">&lt;/<span class="name">FButton</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">    &#123;&#123; x &#125;&#125;,&#123;&#123; y &#125;&#125;</span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p>這樣也跟上一點的呈現結果相同，要不要用全域就看個人了，我個人比較喜歡區域引入，對於目前這個頁面載入了哪些元件比較清楚。</p>
+</li>
+</ol>
 <h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
 <li>透過這個整理，更熟悉Vite打包Vue元件相關過程。</li>
 <li>一直踩到npm link的雷，所以建議部署還是以npm publish為主，這樣檢查套件是否正常運作最準確。</li>
@@ -189,6 +190,39 @@
         <tag>Javascript</tag>
         <tag>Vue</tag>
         <tag>Vite</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>探討Javascript的Hoisting</title>
+    <url>/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。</p>
+<hr>
+<h2 id="var變數的Hoisting"><a href="#var變數的Hoisting" class="headerlink" title="var變數的Hoisting"></a>var變數的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+<p>上述結果會印出undefined，為什麼呢？因為這樣寫法等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> x</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line">x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升</p>
+<h2 id="傳統函式的Hoisting"><a href="#傳統函式的Hoisting" class="headerlink" title="傳統函式的Hoisting"></a>傳統函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述結果會印出Hello，因為整個function都會被提升，這樣寫法等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<p>這也就是為什麼在Javascript裡頭將一個函式用function宣告，也能順利執行函式的原因，因為整個function都提升到呼叫語句之前了阿！</p>
+<h2 id="var變數宣告函式的Hoisting"><a href="#var變數宣告函式的Hoisting" class="headerlink" title="var變數宣告函式的Hoisting"></a>var變數宣告函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>會發生錯誤<em>Uncaught TypeError: test is not a function”</em> ，因為這樣的宣告方式等同於以下寫法</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test</span><br><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line">test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升，所以這邊的test是undefined，自然而然用函式的方式直接呼叫，瀏覽器就報給我們一個錯誤說test不是一個function。所以如果要用變數宣告function的話，務必要用以下的方式</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<p>然後我也會習慣把var改為const方式來宣告，也有點防呆的機制，讓後續的指派變數動作不會誤指派值給這個function，因為我們也很少會把宣告出來的函式重新指派值</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
+<li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
+<li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
       </tags>
   </entry>
   <entry>
@@ -240,39 +274,6 @@
       <tags>
         <tag>Javascript</tag>
         <tag>Vue</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>探討Javascript的Hoisting</title>
-    <url>/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。</p>
-<hr>
-<h2 id="var變數的Hoisting"><a href="#var變數的Hoisting" class="headerlink" title="var變數的Hoisting"></a>var變數的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>上述結果會印出undefined，為什麼呢？因為這樣寫法等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> x</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line">x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升</p>
-<h2 id="傳統函式的Hoisting"><a href="#傳統函式的Hoisting" class="headerlink" title="傳統函式的Hoisting"></a>傳統函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述結果會印出Hello，因為整個function都會被提升，這樣寫法等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<p>這也就是為什麼在Javascript裡頭將一個函式用function宣告，也能順利執行函式的原因，因為整個function都提升到呼叫語句之前了阿！</p>
-<h2 id="var變數宣告函式的Hoisting"><a href="#var變數宣告函式的Hoisting" class="headerlink" title="var變數宣告函式的Hoisting"></a>var變數宣告函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>會發生錯誤<em>Uncaught TypeError: test is not a function”</em> ，因為這樣的宣告方式等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test</span><br><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line">test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升，所以這邊的test是undefined，自然而然用函式的方式直接呼叫，瀏覽器就報給我們一個錯誤說test不是一個function。所以如果要用變數宣告function的話，務必要用以下的方式</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<p>然後我也會習慣把var改為const方式來宣告，也有點防呆的機制，讓後續的指派變數動作不會誤指派值給這個function，因為我們也很少會把宣告出來的函式重新指派值</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
-<li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
-<li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
       </tags>
   </entry>
   <entry>
