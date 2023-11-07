@@ -28,28 +28,28 @@
 
   gtag('config', 'G-JHCRDBT00J');
 </script>
-    <meta name="description" content="Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。">
+    <meta name="description" content="剛開始接觸傳值(pass by value)和傳址(pass by reference)時，常常會搞混，如果觀念似懂非懂的話在開發專案的時候可能會不自覺踩到雷，這一篇就把這個觀念好好記錄下來。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="探討Javascript的Hoisting">
-<meta property="og:url" content="https://fredchang14.github.io/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/index.html">
+<meta property="og:title" content="搞懂Javascript傳值、傳址觀念">
+<meta property="og:url" content="https://fredchang14.github.io/2023/11/07/%E6%90%9E%E6%87%82Javascript%E5%82%B3%E5%80%BC%E3%80%81%E5%82%B3%E5%9D%80%E8%A7%80%E5%BF%B5/index.html">
 <meta property="og:site_name" content="Fred Chang學習紀錄">
-<meta property="og:description" content="Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。">
+<meta property="og:description" content="剛開始接觸傳值(pass by value)和傳址(pass by reference)時，常常會搞混，如果觀念似懂非懂的話在開發專案的時候可能會不自覺踩到雷，這一篇就把這個觀念好好記錄下來。">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2023-10-31T06:07:57.000Z">
-<meta property="article:modified_time" content="2023-11-02T05:58:16.685Z">
+<meta property="article:published_time" content="2023-11-07T06:44:09.000Z">
+<meta property="article:modified_time" content="2023-11-07T07:25:00.055Z">
 <meta property="article:author" content="Fred Chang">
 <meta property="article:tag" content="Javascript">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://fredchang14.github.io/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/">
+<link rel="canonical" href="https://fredchang14.github.io/2023/11/07/%E6%90%9E%E6%87%82Javascript%E5%82%B3%E5%80%BC%E3%80%81%E5%82%B3%E5%9D%80%E8%A7%80%E5%BF%B5/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://fredchang14.github.io/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/","path":"2023/10/31/探討Javascript的Hoisting/","title":"探討Javascript的Hoisting"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://fredchang14.github.io/2023/11/07/%E6%90%9E%E6%87%82Javascript%E5%82%B3%E5%80%BC%E3%80%81%E5%82%B3%E5%9D%80%E8%A7%80%E5%BF%B5/","path":"2023/11/07/搞懂Javascript傳值、傳址觀念/","title":"搞懂Javascript傳值、傳址觀念"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>探討Javascript的Hoisting | Fred Chang學習紀錄</title>
+<title>搞懂Javascript傳值、傳址觀念 | Fred Chang學習紀錄</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JHCRDBT00J"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-JHCRDBT00J","only_pageview":false}</script>
@@ -152,7 +152,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#var%E8%AE%8A%E6%95%B8%E7%9A%84Hoisting"><span class="nav-number">2.</span> <span class="nav-text">var變數的Hoisting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%82%B3%E7%B5%B1%E5%87%BD%E5%BC%8F%E7%9A%84Hoisting"><span class="nav-number">3.</span> <span class="nav-text">傳統函式的Hoisting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#var%E8%AE%8A%E6%95%B8%E5%AE%A3%E5%91%8A%E5%87%BD%E5%BC%8F%E7%9A%84Hoisting"><span class="nav-number">4.</span> <span class="nav-text">var變數宣告函式的Hoisting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">5.</span> <span class="nav-text">小結</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%82%B3%E5%80%BC-pass-by-value"><span class="nav-number">2.</span> <span class="nav-text">傳值(pass by value)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%82%B3%E5%9D%80-pass-by-reference"><span class="nav-number">3.</span> <span class="nav-text">傳址(pass by reference)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%A8%AE%E6%83%85%E6%B3%81"><span class="nav-number">4.</span> <span class="nav-text">其他種情況</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">5.</span> <span class="nav-text">小結</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -210,7 +210,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://fredchang14.github.io/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/">
+    <link itemprop="mainEntityOfPage" href="https://fredchang14.github.io/2023/11/07/%E6%90%9E%E6%87%82Javascript%E5%82%B3%E5%80%BC%E3%80%81%E5%82%B3%E5%9D%80%E8%A7%80%E5%BF%B5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar1.jpg">
@@ -223,12 +223,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="探討Javascript的Hoisting | Fred Chang學習紀錄">
-      <meta itemprop="description" content="Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。">
+      <meta itemprop="name" content="搞懂Javascript傳值、傳址觀念 | Fred Chang學習紀錄">
+      <meta itemprop="description" content="剛開始接觸傳值(pass by value)和傳址(pass by reference)時，常常會搞混，如果觀念似懂非懂的話在開發專案的時候可能會不自覺踩到雷，這一篇就把這個觀念好好記錄下來。">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          探討Javascript的Hoisting
+          搞懂Javascript傳值、傳址觀念
         </h1>
 
         <div class="post-meta-container">
@@ -239,7 +239,7 @@
       </span>
       <span class="post-meta-item-text">發表於</span>
 
-      <time title="創建時間：2023-10-31 14:07:57" itemprop="dateCreated datePublished" datetime="2023-10-31T14:07:57+08:00">2023-10-31</time>
+      <time title="創建時間：2023-11-07 14:44:09" itemprop="dateCreated datePublished" datetime="2023-11-07T14:44:09+08:00">2023-11-07</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -261,34 +261,31 @@
     </span>
 </div>
 
-            <div class="post-description">Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。</div>
+            <div class="post-description">剛開始接觸傳值(pass by value)和傳址(pass by reference)時，常常會搞混，如果觀念似懂非懂的話在開發專案的時候可能會不自覺踩到雷，這一篇就把這個觀念好好記錄下來。</div>
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。</p>
-<hr>
-<h2 id="var變數的Hoisting"><a href="#var變數的Hoisting" class="headerlink" title="var變數的Hoisting"></a>var變數的Hoisting</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>上述結果會印出undefined，為什麼呢？因為這樣寫法等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x) <span class="comment">//印出undefined</span></span><br><span class="line">x = <span class="number">10</span></span><br></pre></td></tr></table></figure>
-<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升</p>
-<h2 id="傳統函式的Hoisting"><a href="#傳統函式的Hoisting" class="headerlink" title="傳統函式的Hoisting"></a>傳統函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述結果會印出Hello，因為整個function都會被提升，這樣寫法等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">test</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>) <span class="comment">//印出Hello</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<p>這也就是為什麼在Javascript裡頭將一個函式用function宣告，也能順利執行函式的原因，因為整個function都提升到呼叫語句之前了阿！</p>
-<h2 id="var變數宣告函式的Hoisting"><a href="#var變數宣告函式的Hoisting" class="headerlink" title="var變數宣告函式的Hoisting"></a>var變數宣告函式的Hoisting</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>會發生錯誤<em>Uncaught TypeError: test is not a function”</em> ，因為這樣的宣告方式等同於以下寫法</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> test</span><br><span class="line"><span class="title function_">test</span>()</span><br><span class="line"></span><br><span class="line">test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看出Hoisting是指<strong>宣告的動作</strong>被提升，所以這邊的test是undefined，自然而然用函式的方式直接呼叫，瀏覽器就報給我們一個錯誤說test不是一個function。所以如果要用變數宣告function的話，務必要用以下的方式</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<p>然後我也會習慣把var改為const方式來宣告，也有點防呆的機制，讓後續的指派變數動作不會誤指派值給這個function，因為我們也很少會把宣告出來的函式重新指派值</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> test = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">test</span>()</span><br></pre></td></tr></table></figure>
-<hr>
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>剛開始接觸傳值(pass by value)和傳址(pass by reference)時，常常會搞混，如果觀念似懂非懂的話在開發專案的時候可能會不自覺踩到雷，這一篇就把這個觀念好好記錄下來。</p>
+<h2 id="傳值-pass-by-value"><a href="#傳值-pass-by-value" class="headerlink" title="傳值(pass by value)"></a>傳值(pass by value)</h2><p>string、number、boolean、null、undefined都是<strong>基本型別</strong>，所以會根據pass by value的方式來運作，另外function 也是以此方式運作<br>舉例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">666</span>;</span><br><span class="line"><span class="keyword">let</span> b = a;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a); <span class="comment">//666</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(b); <span class="comment">//666</span></span><br><span class="line"></span><br><span class="line">a = <span class="number">777</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a); <span class="comment">//777</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(b); <span class="comment">//666</span></span><br></pre></td></tr></table></figure>
+<p>第2行：把a值指派給b變數，所以b值為666<br>第6行：把a值設為777<br>第8行：b值還是本來的值，也就是666</p>
+<h2 id="傳址-pass-by-reference"><a href="#傳址-pass-by-reference" class="headerlink" title="傳址(pass by reference)"></a>傳址(pass by reference)</h2><p>物件裡面的屬性會根據pass by reference來運作</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> son = &#123;</span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> father = son;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line">son.<span class="property">age</span> = <span class="number">40</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 40</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 40</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son === father); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>第4行：把son值指派給father變數，所以father值為<code>&#123;age: 18&#125;</code><br>第7行：將son的age屬性改為40<br>第9行：father的age屬性值也會變成40<br>第11行：son 完全等於father，因為是<em>共用一份記憶體</em></p>
+<p>陣列也會依據pass by reference來運作</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">let</span> arr2 = arr1;</span><br><span class="line"></span><br><span class="line">arr1.<span class="title function_">push</span>(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr2);</span><br></pre></td></tr></table></figure>
+<p>第4行：針對arr1再多push4的值<br>第6行：也改動到了arr2的值</p>
+<p>所以常常在實戰中，習慣複製一份出來，再做相關操作<br>可以在第2行改為<code>let arr2 = arr1.slice(0);</code>或是用ES6擴展符<code>let arr2 = [ ...arr1 ]</code>方式來賦值 (前提裡面的元素不要是物件或陣列)<br>如此一來arr2就不會受到任何影響了</p>
+<h2 id="其他種情況"><a href="#其他種情況" class="headerlink" title="其他種情況"></a>其他種情況</h2><p>如果我們現在是把整個物件取代掉，會發生什麼事呢？</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> son = &#123;</span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> father = son;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line">son = &#123; <span class="attr">age</span>: <span class="number">5</span> &#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 5</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br></pre></td></tr></table></figure>
+<p>第7行：son賦予整個物件<code>&#123; age: 5 &#125;</code><br>第9行：father的age仍然是18，因為son是重新賦值，會產生一個新的實體參考，所以不會影響到father的age值</p>
+<p>這種情況有人稱它為pass by sharing，也有人會認為說這個其實就是pass by value，我們就不在名詞上面爭議，理解一下概念即可。<br>陣列也會有這樣的情況，如果是賦予一個全新陣列，也會跟本來的獨立，這邊就不額外舉例了。</p>
 <h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
-<li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
-<li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
+<li>了解pass by value和pass by reference的差異</li>
+<li>僅修改物件或陣列裡面的值以及賦予整個物件或陣列，結果會不同(因記憶體指向的差異)</li>
 </ol>
 
     </div>
@@ -321,14 +318,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/10/27/%E6%8E%A2%E8%A8%8EVue%E7%9A%84watch%E6%A9%9F%E5%88%B6/" rel="prev" title="探討Vue的watch機制">
-                  <i class="fa fa-angle-left"></i> 探討Vue的watch機制
+                <a href="/2023/11/06/%E5%A6%82%E4%BD%95%E5%B0%87Vue%E7%9A%84composable%E5%92%8Ccomponent%E7%B6%93%E7%94%B1Vite%E6%89%93%E5%8C%85%E8%87%B3npm%E5%B9%B3%E5%8F%B0%EF%BC%8C%E8%AE%93%E5%85%B6%E4%BB%96%E4%BA%BA%E5%8F%AF%E4%BB%A5%E8%BC%89%E5%85%A5%E4%BD%BF%E7%94%A8/" rel="prev" title="如何將Vue的composable和component經由Vite打包至npm平台，讓其他人可以載入使用">
+                  <i class="fa fa-angle-left"></i> 如何將Vue的composable和component經由Vite打包至npm平台，讓其他人可以載入使用
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/11/01/%E4%BD%BF%E7%94%A8Python%E4%B8%B2%E6%8E%A5Azure%20OpenAI%E6%9C%8D%E5%8B%99/" rel="next" title="使用Python串接Azure OpenAI服務">
-                  使用Python串接Azure OpenAI服務 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -394,7 +388,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"FredChang14","repo":"fredchang14.github.io","client_id":"c649ec83ba94e948b86f","client_secret":"03f997a902a0d411b1c4535fb7b8a5694197ffaf","admin_user":"FredChang14","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-TW","labels":"Gitalk","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"e5bdc69056dfa719e9de141e08a52ddd"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"FredChang14","repo":"fredchang14.github.io","client_id":"c649ec83ba94e948b86f","client_secret":"03f997a902a0d411b1c4535fb7b8a5694197ffaf","admin_user":"FredChang14","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-TW","labels":"Gitalk","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"b7dff82fb27c39b139d6e154e3079527"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
