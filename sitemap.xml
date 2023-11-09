@@ -110,20 +110,6 @@
 
   
   <url>
-    <loc>https://fredchang14.github.io/tags/Python/</loc>
-    <lastmod>2023-11-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://fredchang14.github.io/tags/AI/</loc>
-    <lastmod>2023-11-09</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://fredchang14.github.io/tags/Javascript/</loc>
     <lastmod>2023-11-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -145,6 +131,20 @@
   </url>
   
   <url>
+    <loc>https://fredchang14.github.io/tags/Python/</loc>
+    <lastmod>2023-11-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/tags/AI/</loc>
+    <lastmod>2023-11-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://fredchang14.github.io/tags/Vite/</loc>
     <lastmod>2023-11-09</lastmod>
     <changefreq>weekly</changefreq>
@@ -154,14 +154,14 @@
 
   
   <url>
-    <loc>https://fredchang14.github.io/categories/AI/</loc>
+    <loc>https://fredchang14.github.io/categories/Javascript/</loc>
     <lastmod>2023-11-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://fredchang14.github.io/categories/Javascript/</loc>
+    <loc>https://fredchang14.github.io/categories/AI/</loc>
     <lastmod>2023-11-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
