@@ -4,6 +4,69 @@
   <url>
     <loc>https://fredchang14.github.io/2023/11/10/%E5%A6%82%E4%BD%95%E5%B0%87Vue%E5%92%8C-NetCore%E5%8F%8A%E9%83%A8%E7%BD%B2%E5%88%B0IIS%E4%B8%8A%E7%B7%9A/</loc>
     
+    <lastmod>2024-02-01</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/img/VueDotNetCoreProjectDemo/vueapp/package-lock.json</loc>
+    
+    <lastmod>2023-11-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/img/VueDotNetCoreProjectDemo/vueapp/node_modules/lodash/release.html</loc>
+    
+    <lastmod>2023-11-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/img/VueDotNetCoreProjectDemo/vueapp/node_modules/lodash/package.json</loc>
+    
+    <lastmod>2023-11-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/img/VueDotNetCoreProjectDemo/vueapp/node_modules/eslint/package.json</loc>
+    
+    <lastmod>2023-11-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/img/VueDotNetCoreProjectDemo/vueapp/node_modules/eslint-plugin-vue/package.json</loc>
+    
+    <lastmod>2023-11-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/img/VueDotNetCoreProjectDemo/vueapp/node_modules/@eslint/eslintrc/package.json</loc>
+    
+    <lastmod>2023-11-10</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/img/VueDotNetCoreProjectDemo/vueapp/package.json</loc>
+    
     <lastmod>2023-11-10</lastmod>
     
     <changefreq>monthly</changefreq>
@@ -32,6 +95,15 @@
     <loc>https://fredchang14.github.io/2023/11/06/%E5%A6%82%E4%BD%95%E5%B0%87Vue%E7%9A%84composable%E5%92%8Ccomponent%E7%B6%93%E7%94%B1Vite%E6%89%93%E5%8C%85%E8%87%B3npm%E5%B9%B3%E5%8F%B0%EF%BC%8C%E8%AE%93%E5%85%B6%E4%BB%96%E4%BA%BA%E5%8F%AF%E4%BB%A5%E8%BC%89%E5%85%A5%E4%BD%BF%E7%94%A8/</loc>
     
     <lastmod>2023-11-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/img/VueDotNetCoreProjectDemo/vueapp/index.html</loc>
+    
+    <lastmod>2023-11-06</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -112,7 +184,7 @@
 
   <url>
     <loc>https://fredchang14.github.io/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -120,49 +192,49 @@
   
   <url>
     <loc>https://fredchang14.github.io/tags/Python/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://fredchang14.github.io/tags/AI/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://fredchang14.github.io/tags/Javascript/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://fredchang14.github.io/tags/Vue/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://fredchang14.github.io/tags/Nuxt/</loc>
-    <lastmod>2023-11-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://fredchang14.github.io/tags/NetCore/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://fredchang14.github.io/tags/Vite/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://fredchang14.github.io/tags/NetCore/</loc>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -171,21 +243,21 @@
   
   <url>
     <loc>https://fredchang14.github.io/categories/AI/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://fredchang14.github.io/categories/Javascript/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://fredchang14.github.io/categories/%E7%B3%BB%E7%B5%B1%E6%95%B4%E5%90%88/</loc>
-    <lastmod>2023-11-10</lastmod>
+    <lastmod>2024-02-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
