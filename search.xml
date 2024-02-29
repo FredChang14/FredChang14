@@ -534,7 +534,7 @@
 <li><p>以此磁碟建立VM<br> (1) 點選<strong>建立VM</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/13.PNG"><br> (2) 為此VM取一個名稱，其餘用預設值就好，並按下檢閱+建立，再按下建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/14.PNG"><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/15.PNG"><br> (3) 完成建立VM！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/16.PNG"></p>
 </li>
 </ol>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>反覆透過以上方式可以建立多台VM，不用從零做VM架設，實在很方便！紀錄建置相關步驟，提醒有同樣需求的人和未來的自己有相同需求時，可以快速建立VM。</p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>反覆透過以上方式可以建立多台VM(快照建立一次即可，從新增硬碟步驟開始實作即可)，不用從零實作VM架設，實在很方便！紀錄建置相關步驟，提醒有同樣需求的人和未來的自己有相同需求時，可以快速建立VM。</p>
 ]]></content>
       <categories>
         <category>Azure</category>
