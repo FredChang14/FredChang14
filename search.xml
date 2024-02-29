@@ -521,4 +521,26 @@
         <tag>.NetCore</tag>
       </tags>
   </entry>
+  <entry>
+    <title>如何在Azure複製現有VM，達成快速建置VM目的</title>
+    <url>/2024/02/27/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因為工作需要，需要建立多台虛擬機器(以下簡稱VM)，其內容物都是一樣的VM(OS、已有的程式…)，從零開始建立實在太慢，搜尋一些方式後整理出我最後解決方案及建立步驟說明。</p>
+<p>步驟順序大致為 1. 從硬碟建立快照 2. 以此快照建立硬碟 3. 以此磁碟建立VM</p>
+<h2 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h2><ol>
+<li><p>從硬碟建立快照<br> (1) 於Azure平台上點選虛擬機器服務<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/1.PNG"><br> (2) 呈現出目前所有的VM，我們這次打算進行AP-01這台VM的快速複製<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/2.PNG"><br> (3) 進到AP-01後，點選左方<strong>磁碟</strong>(註：此VM停不停止運作都沒關係)<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/3.PNG"><br> (4) 點選磁碟名稱<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/4.PNG"><br> (5) 進入該磁碟頁面後，點選<strong>建立快照集</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/5.PNG"><br> (6) 為此快照取一個名稱，其餘用預設值就好，並按下檢閱+建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/6.PNG"><br> (7) 完成建立快照！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/7.PNG"></p>
+</li>
+<li><p>以此快照建立硬碟<br> (1) 點選<strong>建立磁碟</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/8.PNG"><br> (2) 為此磁碟取一個名稱，其餘用預設值就好，並按下檢閱+建立，再按下建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/9.PNG"><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/11.PNG"><br> (3) 完成建立磁碟！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/12.PNG"></p>
+</li>
+<li><p>以此磁碟建立VM<br> (1) 點選<strong>建立VM</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/13.PNG"><br> (2) 為此VM取一個名稱，其餘用預設值就好，並按下檢閱+建立，再按下建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/14.PNG"><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/15.PNG"><br> (3) 完成建立VM！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/16.PNG"></p>
+</li>
+</ol>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>反覆透過以上方式可以建立多台VM，不用從零做VM架設，實在很方便！紀錄建置相關步驟，提醒有同樣需求的人和未來的自己有相同需求時，可以快速建立VM。</p>
+]]></content>
+      <categories>
+        <category>Azure</category>
+      </categories>
+      <tags>
+        <tag>Azure</tag>
+      </tags>
+  </entry>
 </search>
