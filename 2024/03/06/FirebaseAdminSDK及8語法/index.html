@@ -28,17 +28,17 @@
 
   gtag('config', 'G-JHCRDBT00J');
 </script>
-    <meta name="description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
+    <meta name="description" content="繼上一篇v9語法，實戰我比較少會使用，接下來紀錄一下較常用的Admin SDK方式操作資料庫！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
 <meta property="og:type" content="article">
-<meta property="og:title" content="學習Firebase Firestore Admin SDK語法">
+<meta property="og:title" content="學習Firebase Firestore(Admin SDK語法)">
 <meta property="og:url" content="https://fredchang14.github.io/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/index.html">
 <meta property="og:site_name" content="Fred Chang學習紀錄">
-<meta property="og:description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
+<meta property="og:description" content="繼上一篇v9語法，實戰我比較少會使用，接下來紀錄一下較常用的Admin SDK方式操作資料庫！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:image" content="https://fredchang14.github.io/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/1.PNG">
 <meta property="og:image" content="https://fredchang14.github.io/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/2.PNG">
 <meta property="article:published_time" content="2024-03-06T09:05:13.000Z">
-<meta property="article:modified_time" content="2024-03-06T15:07:12.604Z">
+<meta property="article:modified_time" content="2024-03-07T06:12:47.811Z">
 <meta property="article:author" content="Fred Chang">
 <meta property="article:tag" content="Javascript">
 <meta property="article:tag" content="Firebase">
@@ -50,10 +50,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://fredchang14.github.io/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/","path":"2024/03/06/FirebaseAdminSDK及8語法/","title":"學習Firebase Firestore Admin SDK語法"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://fredchang14.github.io/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/","path":"2024/03/06/FirebaseAdminSDK及8語法/","title":"學習Firebase Firestore(Admin SDK語法)"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>學習Firebase Firestore Admin SDK語法 | Fred Chang學習紀錄</title><meta name="robots" content="noindex">
+<title>學習Firebase Firestore(Admin SDK語法) | Fred Chang學習紀錄</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JHCRDBT00J"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-JHCRDBT00J","only_pageview":false}</script>
@@ -156,7 +156,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%82%BACRUD%E6%96%B9%E5%BC%8F%E8%A8%98%E9%8C%84"><span class="nav-number">2.</span> <span class="nav-text">分為CRUD方式記錄</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-Create-%E5%89%B5%E5%BB%BA%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">C-(Create)創建資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-Read-%E6%9F%A5%E8%A9%A2%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">R-(Read)查詢資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#U-Update-%E6%9B%B4%E6%96%B0%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">U-(Update)更新資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#D-Delete-%E5%88%AA%E9%99%A4%E6%96%87%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">D-(Delete)刪除文件</span></a></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%82%BACRUD%E6%96%B9%E5%BC%8F%E8%A8%98%E9%8C%84"><span class="nav-number">2.</span> <span class="nav-text">分為CRUD方式記錄</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-Create-%E5%89%B5%E5%BB%BA%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">C-(Create)創建資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-Read-%E6%9F%A5%E8%A9%A2%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">R-(Read)查詢資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#U-Update-%E6%9B%B4%E6%96%B0%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">U-(Update)更新資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#D-Delete-%E5%88%AA%E9%99%A4%E6%96%87%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">D-(Delete)刪除文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">1.</span> <span class="nav-text">小結</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -171,7 +171,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">文章</span>
         </a>
       </div>
@@ -227,12 +227,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="學習Firebase Firestore Admin SDK語法 | Fred Chang學習紀錄">
-      <meta itemprop="description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
+      <meta itemprop="name" content="學習Firebase Firestore(Admin SDK語法) | Fred Chang學習紀錄">
+      <meta itemprop="description" content="繼上一篇v9語法，實戰我比較少會使用，接下來紀錄一下較常用的Admin SDK方式操作資料庫！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          學習Firebase Firestore Admin SDK語法
+          學習Firebase Firestore(Admin SDK語法)
         </h1>
 
         <div class="post-meta-container">
@@ -265,7 +265,7 @@
     </span>
 </div>
 
-            <div class="post-description">因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！</div>
+            <div class="post-description">繼上一篇v9語法，實戰我比較少會使用，接下來紀錄一下較常用的Admin SDK方式操作資料庫！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！</div>
         </div>
       </header>
 
@@ -273,7 +273,7 @@
     
     
     <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
-<li>因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！</li>
+<li>繼上一篇v9語法，實戰我比較少會使用，接下來紀錄一下較常用的Admin SDK方式操作資料庫！</li>
 <li>此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠。</li>
 </ul>
 <p>留意：</p>
@@ -287,10 +287,46 @@
 <li>U-(Update)</li>
 <li>D-(Delete)</li>
 </ul>
-<h1 id="C-Create-創建資料"><a href="#C-Create-創建資料" class="headerlink" title="C-(Create)創建資料"></a>C-(Create)創建資料</h1><h1 id="R-Read-查詢資料"><a href="#R-Read-查詢資料" class="headerlink" title="R-(Read)查詢資料"></a>R-(Read)查詢資料</h1><h1 id="U-Update-更新資料"><a href="#U-Update-更新資料" class="headerlink" title="U-(Update)更新資料"></a>U-(Update)更新資料</h1><h1 id="D-Delete-刪除文件"><a href="#D-Delete-刪除文件" class="headerlink" title="D-(Delete)刪除文件"></a>D-(Delete)刪除文件</h1><blockquote>
+<h1 id="C-Create-創建資料"><a href="#C-Create-創建資料" class="headerlink" title="C-(Create)創建資料"></a>C-(Create)創建資料</h1><ul>
+<li>創建文件(使用set，可命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料)</span><br></pre></td></tr></table></figure>
+如果文件不存在則創建，若存在則整個物件覆蓋；若不想整個物件覆蓋，只要修改則要加上參數物件{ merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;LA&#x27;</span>).<span class="title function_">set</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;Los Angeles&#x27;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&#x27;CA&#x27;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&#x27;USA&#x27;</span></span><br><span class="line">    &#125;, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
+<li>創建文件(使用add，Firebase自動命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">add</span>(物件資料);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">add</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;Tokyo&#x27;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&#x27;Japan&#x27;</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;創建文件的id: &#x27;</span>, res.<span class="property">id</span>);</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+可以取得創建文件的id</li>
+</ul>
+<h1 id="R-Read-查詢資料"><a href="#R-Read-查詢資料" class="headerlink" title="R-(Read)查詢資料"></a>R-(Read)查詢資料</h1><ul>
+<li><p>查詢文件<br><strong>語法</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">get</span>();</span><br></pre></td></tr></table></figure>
+<p><strong>範例</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> doc = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;SF&#x27;</span>).<span class="title function_">get</span>();</span><br><span class="line">    <span class="keyword">if</span> (doc.<span class="property">exists</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;文件資料&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;查無文件&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>可以使用.data()，取得資料</p>
+</li>
+<li><p>從集合查詢多個文件<br><strong>語法</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> citiesRef = db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> snapshot = <span class="keyword">await</span> citiesRef.<span class="title function_">get</span>();</span><br></pre></td></tr></table></figure>
+<p>如果有條件，加在.get()前面，例如變成<code>const snapshot = await citiesRef.where(&#39;欄位名&#39;, &#39;==&#39;, true).get();</code><br><strong>範例</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> citiesRef = db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> snapshot = <span class="keyword">await</span> citiesRef.<span class="title function_">where</span>(<span class="string">&#x27;capital&#x27;</span>, <span class="string">&#x27;==&#x27;</span>, <span class="literal">true</span>).<span class="title function_">get</span>();</span><br><span class="line">    <span class="keyword">if</span> (snapshot.<span class="property">empty</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;No matching documents.&#x27;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    snapshot.<span class="title function_">forEach</span>(<span class="function"><span class="params">doc</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&#x27;=&gt;&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>使用for…of或是傳統for，必須針對snapshot再加上.docs跑迴圏(如使用forEach則直接使用snapshot)。最後再使用.data()，取得資料。<br>例如</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> doc <span class="keyword">of</span> snapshot.<span class="property">docs</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&#x27;=&gt;&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="U-Update-更新資料"><a href="#U-Update-更新資料" class="headerlink" title="U-(Update)更新資料"></a>U-(Update)更新資料</h1><ul>
+<li>更新文件(使用update，非整個物件覆蓋)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">update</span>(物件資料);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;LA&#x27;</span>).<span class="title function_">update</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;new country!&quot;</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
+<li>更新文件(使用set，替換全部文件內容)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料);</span><br></pre></td></tr></table></figure>
+若不全部替換，務必加上, { merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><br>  同本文<strong>創建文件</strong>set方法</li>
+</ul>
+<p><strong>*小提醒：使用update等同於set加上{ merge: true }，效果完全相同</strong></p>
+<h1 id="D-Delete-刪除文件"><a href="#D-Delete-刪除文件" class="headerlink" title="D-(Delete)刪除文件"></a>D-(Delete)刪除文件</h1><p><strong>語法</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">delete</span>();</span><br></pre></td></tr></table></figure>
+<p><strong>範例</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;DC&#x27;</span>).<span class="title function_">delete</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>透過紀錄語法，讓以後的自己方便查找資訊，常常會透過後端與資料庫溝通的方式，取得資料之後再傳遞給前端，這樣作法相比上一篇v9作法更安全！</p>
+<blockquote>
 <p>參考資料<br><a target="_blank" rel="noopener" href="https://firebase.google.com/docs/firestore?hl=zh-tw">Firebase官方文件 </a></p>
 </blockquote>
-<!-- flag of hidden posts -->
+
     </div>
 
     
@@ -320,6 +356,15 @@
 
         
 
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/06/%E5%AD%B8%E7%BF%92Firebase%E7%9A%84Firestore%E8%AA%9E%E6%B3%95(v9)/" rel="prev" title="學習Firebase Firestore語法(v9)">
+                  <i class="fa fa-angle-left"></i> 學習Firebase Firestore語法(v9)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
     </footer>
   </article>
 </div>
