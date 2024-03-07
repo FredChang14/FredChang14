@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#4682B4"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#4682B4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha256-CTSx/A06dm1B063156EVh15m6Y67pAjZZaQc89LLSrU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fredchang14.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜尋...","empty":"我們無法找到任何有關 ${query} 的搜索結果","hits_time":"${hits} 找到 ${time} 個結果","hits":"找到 ${hits} 個結果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-JHCRDBT00J"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-JHCRDBT00J');
+</script>
+    <meta name="description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！">
+<meta property="og:type" content="article">
+<meta property="og:title" content="學習Firebase的Firestore語法(v9)">
+<meta property="og:url" content="https://fredchang14.github.io/2024/03/06/%E5%AD%B8%E7%BF%92Firebase%E7%9A%84Firestore%E8%AA%9E%E6%B3%95(v9)/index.html">
+<meta property="og:site_name" content="Fred Chang學習紀錄">
+<meta property="og:description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2024-03-06T05:06:59.000Z">
+<meta property="article:modified_time" content="2024-03-06T15:19:23.362Z">
+<meta property="article:author" content="Fred Chang">
+<meta property="article:tag" content="Javascript">
+<meta property="article:tag" content="Firebase">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://fredchang14.github.io/2024/03/06/%E5%AD%B8%E7%BF%92Firebase%E7%9A%84Firestore%E8%AA%9E%E6%B3%95(v9)/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://fredchang14.github.io/2024/03/06/%E5%AD%B8%E7%BF%92Firebase%E7%9A%84Firestore%E8%AA%9E%E6%B3%95(v9)/","path":"2024/03/06/學習Firebase的Firestore語法(v9)/","title":"學習Firebase的Firestore語法(v9)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>學習Firebase的Firestore語法(v9) | Fred Chang學習紀錄</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JHCRDBT00J"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-JHCRDBT00J","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切換導航欄" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Fred Chang學習紀錄</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Hello！</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜尋" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首頁</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>標籤</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分類</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>歸檔</a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>網站地圖</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜尋
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜尋..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目錄
+        </li>
+        <li class="sidebar-nav-overview">
+          本站概要
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%82%BACRUD%E6%96%B9%E5%BC%8F%E8%A8%98%E9%8C%84"><span class="nav-number">2.</span> <span class="nav-text">分為CRUD方式記錄</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-Create-%E5%89%B5%E5%BB%BA%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">C-(Create)創建資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-Read-%E6%9F%A5%E8%A9%A2%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">R-(Read)查詢資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#U-Update-%E6%9B%B4%E6%96%B0%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">U-(Update)更新資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#D-Delete-%E5%88%AA%E9%99%A4%E6%96%87%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">D-(Delete)刪除文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">1.</span> <span class="nav-text">小結</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Fred Chang"
+      src="/images/avatar1.jpg">
+  <p class="site-author-name" itemprop="name">Fred Chang</p>
+  <div class="site-description" itemprop="description">在深山內的工程師；用來記錄工作中或學習碰到的問題</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">文章</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分類</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">標籤</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="mailto:spadej03727@gmail.com" title="E-Mail → mailto:spadej03727@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
+    <link itemprop="mainEntityOfPage" href="https://fredchang14.github.io/2024/03/06/%E5%AD%B8%E7%BF%92Firebase%E7%9A%84Firestore%E8%AA%9E%E6%B3%95(v9)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar1.jpg">
+      <meta itemprop="name" content="Fred Chang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fred Chang學習紀錄">
+      <meta itemprop="description" content="在深山內的工程師；用來記錄工作中或學習碰到的問題">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="學習Firebase的Firestore語法(v9) | Fred Chang學習紀錄">
+      <meta itemprop="description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          學習Firebase的Firestore語法(v9)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">發表於</span>
+
+      <time title="創建時間：2024-03-06 13:06:59" itemprop="dateCreated datePublished" datetime="2024-03-06T13:06:59+08:00">2024-03-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分類於</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Firebase/" itemprop="url" rel="index"><span itemprop="name">Firebase</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="閱讀次數">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">閱讀次數：</span>
+      <span class="firestore-visitors-count"></span>
+    </span>
+</div>
+
+            <div class="post-description">因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！</p>
+<p>留意：</p>
+<ul>
+<li><p>v9版本就是應用到Firebase文件內的Web modular API，也就是利用前端操作資料庫，與Admin SDK和v8版本(Web namespaced API)語法存在一些差異。</p>
+</li>
+<li><p>因為是前端操作資料庫，需要到專案設定&gt;&gt;一般設定，新增應用程式，選擇Web版本。並且要把Firestore Database裡的規則更改為以下</p>
+  <figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">rules_version <span class="operator">=</span> <span class="string">&#x27;2&#x27;</span>;</span><br><span class="line"></span><br><span class="line">service cloud.<span class="keyword">firestore</span> &#123;</span><br><span class="line">    <span class="keyword">match</span> <span class="operator">/</span>databases<span class="operator">/</span>&#123;database&#125;<span class="operator">/</span><span class="keyword">documents</span> &#123;</span><br><span class="line">        <span class="keyword">match</span> <span class="operator">/</span>&#123;document<span class="operator">=**</span>&#125; &#123;</span><br><span class="line">            allow read, write<span class="operator">:</span> <span class="keyword">if</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  這樣才能讀寫資料庫，否則無權限會出現***Uncaught (in promise) FirebaseError: Missing or insufficient permissions.***的錯誤。<br>  但要留意，上述寫法代表讀寫全部開放，所以不安全，請以實際情況調整之。</p>
+</li>
+<li><p>所有的動作都是非同步，所以在Javascript內必須做非同步處理，以下皆使用async&#x2F;await示範！</p>
+</li>
+<li><p>初始化資料庫，並取得db物件</p>
+  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; initializeApp &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/app&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; getFirestore &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> firebaseConfig = &#123;</span><br><span class="line">    <span class="attr">apiKey</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">authDomain</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">projectId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">storageBucket</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">messagingSenderId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">appId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">initializeApp</span>(firebaseConfig);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> db = <span class="title function_">getFirestore</span>(app);</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="分為CRUD方式記錄"><a href="#分為CRUD方式記錄" class="headerlink" title="分為CRUD方式記錄"></a>分為CRUD方式記錄</h2><ul>
+<li>C-(Create)</li>
+<li>R-(Read)</li>
+<li>U-(Update)</li>
+<li>D-(Delete)</li>
+</ul>
+<h1 id="C-Create-創建資料"><a href="#C-Create-創建資料" class="headerlink" title="C-(Create)創建資料"></a>C-(Create)創建資料</h1><ul>
+<li>創建文件(使用setDoc，可命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
+如果文件不存在則創建，若存在則整個物件覆蓋；若不想整個物件覆蓋，只要修改則要加上參數物件{ merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, setDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>; </span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;USA&quot;</span></span><br><span class="line">    &#125;, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
+<li>創建文件(使用addDoc，Firebase自動命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">addDoc</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;集合名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; collection, addDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>; </span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> docRef = <span class="keyword">await</span> <span class="title function_">addDoc</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;cities&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Tokyo&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;Japan&quot;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Document written with ID: &quot;</span>, docRef.<span class="property">id</span>);</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+可以取得創建文件的id</li>
+</ul>
+<h1 id="R-Read-查詢資料"><a href="#R-Read-查詢資料" class="headerlink" title="R-(Read)查詢資料"></a>R-(Read)查詢資料</h1><ul>
+<li>查詢文件<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">getDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>))</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, getDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> docSnap = <span class="keyword">await</span> <span class="title function_">getDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>));</span><br><span class="line">    <span class="keyword">if</span> (docSnap.<span class="title function_">exists</span>()) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Document data:&quot;</span>, docSnap.<span class="title function_">data</span>());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;No such document!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+使用.data()，取得資料</li>
+<li>從集合查詢多個文件<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> q = <span class="title function_">query</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;集合名&quot;</span>));</span><br><span class="line"><span class="keyword">const</span> querySnapshot = <span class="keyword">await</span> <span class="title function_">getDocs</span>(q);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; collection, query, where, getDocs &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> q = <span class="title function_">query</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;cities&quot;</span>));</span><br><span class="line">    <span class="keyword">const</span> querySnapshot = <span class="keyword">await</span> <span class="title function_">getDocs</span>(q);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> doc <span class="keyword">of</span> querySnapshot.<span class="property">docs</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&quot; =&gt; &quot;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+使用for…of，必須針對querySnapshot再加上.docs跑迴圏(如使用forEach則直接使用querySnapshot)。最後再使用.data()，取得資料。</li>
+</ul>
+<h1 id="U-Update-更新資料"><a href="#U-Update-更新資料" class="headerlink" title="U-(Update)更新資料"></a>U-(Update)更新資料</h1><ul>
+<li>更新文件(使用updateDoc，非整個物件覆蓋)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">updateDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, updateDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">updateDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;new country!&quot;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
+<li>更新文件(使用setDoc，整個物件覆蓋全部文件內容)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
+若不覆蓋，務必加上, { merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><br>  同創建文件setDoc</li>
+</ul>
+<p><strong>*小提醒：使用updateDoc等同於setDoc加上{ merge: true }，效果完全相同</strong></p>
+<h1 id="D-Delete-刪除文件"><a href="#D-Delete-刪除文件" class="headerlink" title="D-(Delete)刪除文件"></a>D-(Delete)刪除文件</h1><p><strong>語法</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">deleteDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>));</span><br></pre></td></tr></table></figure>
+<p><strong>範例</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, deleteDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">deleteDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>));</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>透過紀錄語法，讓以後的自己方便查找資訊，前端撈取資料雖然方便，但有時候要留意安全性問題！</p>
+<blockquote>
+<p>參考資料<br><a target="_blank" rel="noopener" href="https://firebase.google.com/docs/firestore?hl=zh-tw">Firebase官方文件 </a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div>
+    <script type="text/javascript">
+      document.write(
+        "<iframe scrolling='no' frameborder='0' style='height: 212px; width: 100%;' " + 
+        "sandbox='allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-storage-access-by-user-activation' " + 
+        "src='https://button.like.co/in/embed/spadej03727/button?referrer=" +
+        encodeURIComponent(location.href.split("?")[0].split("#")[0]) + "'></iframe>");
+    </script>
+</div>
+          <div class="links-of-blogroll-title"><i class="fa fa-signs-post fa-fw"></i>
+    相關文章
+  </div>
+  <ul class="popular-posts">
+  </ul>
+
+          <div class="post-tags">
+              <a href="/tags/Javascript/" rel="tag"><i class="fa fa-tag"></i> Javascript</a>
+              <a href="/tags/Firebase/" rel="tag"><i class="fa fa-tag"></i> Firebase</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/02/27/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/" rel="prev" title="如何在Azure複製現有VM，達成快速建置VM目的">
+                  <i class="fa fa-angle-left"></i> 如何在Azure複製現有VM，達成快速建置VM目的
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">轉載文章時請附上作者Fred Chang及原文連結</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="回到頂端">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.4.0/firebase-app-compat.js" integrity="sha256-kv9gfd+UUnUqqJ2d478LEHzOijuUbZOVdEkuXSMm4qM=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.4.0/firebase-firestore-compat.js" integrity="sha256-sS/hkEB7nn47hhc//PNKfXiRX2YMEe4rBqUIqEhMYA8=" crossorigin="anonymous"></script>
+  <script class="next-config" data-name="firestore" type="application/json">{"enable":true,"collection":"articles","apiKey":"AIzaSyBTOKqRiFOEqvCetJCqRAkF-ENQHfmRYYM","projectId":"github-pages-blog"}</script>
+  <script src="/js/third-party/statistics/firestore.js"></script>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"FredChang14","repo":"fredchang14.github.io","client_id":"c649ec83ba94e948b86f","client_secret":"03f997a902a0d411b1c4535fb7b8a5694197ffaf","admin_user":"FredChang14","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-TW","labels":"Gitalk","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"e4f21b60b196b0f10b94936035d79340"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>!function(r){r.imageLazyLoadSetting.processImages=t;var e=r.imageLazyLoadSetting.isSPA,n=r.imageLazyLoadSetting.preloadRatio||1,c=a();function a(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(){e&&(c=a());for(var t,o=0;o<c.length;o++)0<=(t=(t=c[o]).getBoundingClientRect()).bottom&&0<=t.left&&t.top<=(r.innerHeight*n||document.documentElement.clientHeight*n)&&function(){var t,e,n,a,i=c[o];e=function(){c=c.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(n=new Image,a=t.getAttribute("data-original"),n.onload=function(){t.src=a,t.removeAttribute("data-original"),e&&e()},t.src!==a&&(n.src=a))}()}function i(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",i),r.addEventListener("resize",i),r.addEventListener("orientationchange",i)}(this);</script></body>
+</html>

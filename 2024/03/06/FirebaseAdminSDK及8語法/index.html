@@ -28,28 +28,32 @@
 
   gtag('config', 'G-JHCRDBT00J');
 </script>
-    <meta name="description" content="我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們來挑戰不用let，選擇用var來作為解決方案，那該如何解決這個問題呢？">
+    <meta name="description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
 <meta property="og:type" content="article">
-<meta property="og:title" content="用for迴圈執行setTimeout方法印出1~5有哪些解法">
-<meta property="og:url" content="https://fredchang14.github.io/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/index.html">
+<meta property="og:title" content="學習Firebase Firestore Admin SDK語法">
+<meta property="og:url" content="https://fredchang14.github.io/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/index.html">
 <meta property="og:site_name" content="Fred Chang學習紀錄">
-<meta property="og:description" content="我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們來挑戰不用let，選擇用var來作為解決方案，那該如何解決這個問題呢？">
+<meta property="og:description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
 <meta property="og:locale" content="zh_TW">
-<meta property="article:published_time" content="2023-10-27T05:15:57.000Z">
-<meta property="article:modified_time" content="2023-11-03T00:35:35.090Z">
+<meta property="og:image" content="https://fredchang14.github.io/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/1.PNG">
+<meta property="og:image" content="https://fredchang14.github.io/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/2.PNG">
+<meta property="article:published_time" content="2024-03-06T09:05:13.000Z">
+<meta property="article:modified_time" content="2024-03-06T15:07:12.604Z">
 <meta property="article:author" content="Fred Chang">
 <meta property="article:tag" content="Javascript">
+<meta property="article:tag" content="Firebase">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://fredchang14.github.io/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/1.PNG">
 
 
-<link rel="canonical" href="https://fredchang14.github.io/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/">
+<link rel="canonical" href="https://fredchang14.github.io/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://fredchang14.github.io/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/","path":"2023/10/27/跑迴圈用setTimeout印出1-5有哪些/","title":"用for迴圈執行setTimeout方法印出1~5有哪些解法"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-TW","comments":true,"permalink":"https://fredchang14.github.io/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/","path":"2024/03/06/FirebaseAdminSDK及8語法/","title":"學習Firebase Firestore Admin SDK語法"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>用for迴圈執行setTimeout方法印出1~5有哪些解法 | Fred Chang學習紀錄</title>
+<title>學習Firebase Firestore Admin SDK語法 | Fred Chang學習紀錄</title><meta name="robots" content="noindex">
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JHCRDBT00J"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-JHCRDBT00J","only_pageview":false}</script>
@@ -152,7 +156,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%95%8F%E9%A1%8C"><span class="nav-number">2.</span> <span class="nav-text">問題</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%B3%951%EF%BC%9A%E4%BD%BF%E7%94%A8setTimeout%E5%82%B3%E5%85%A5%E5%8F%83%E6%95%B8%E6%96%B9%E5%BC%8F%E8%99%95%E7%90%86"><span class="nav-number">3.</span> <span class="nav-text">解法1：使用setTimeout傳入參數方式處理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%B3%952%EF%BC%9A%E4%BD%BF%E7%94%A8bind%E6%96%B9%E5%BC%8F%E8%99%95%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">解法2：使用bind方式處理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%B3%953%EF%BC%9A%E4%BD%BF%E7%94%A8%E9%96%89%E5%8C%85-closure"><span class="nav-number">5.</span> <span class="nav-text">解法3：使用閉包(closure)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%B5%90"><span class="nav-number">6.</span> <span class="nav-text">小結</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%82%BACRUD%E6%96%B9%E5%BC%8F%E8%A8%98%E9%8C%84"><span class="nav-number">2.</span> <span class="nav-text">分為CRUD方式記錄</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-Create-%E5%89%B5%E5%BB%BA%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">C-(Create)創建資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#R-Read-%E6%9F%A5%E8%A9%A2%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">R-(Read)查詢資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#U-Update-%E6%9B%B4%E6%96%B0%E8%B3%87%E6%96%99"><span class="nav-number"></span> <span class="nav-text">U-(Update)更新資料</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#D-Delete-%E5%88%AA%E9%99%A4%E6%96%87%E4%BB%B6"><span class="nav-number"></span> <span class="nav-text">D-(Delete)刪除文件</span></a></div>
         </div>
         <!--/noindex-->
 
@@ -210,7 +214,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-TW">
-    <link itemprop="mainEntityOfPage" href="https://fredchang14.github.io/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/">
+    <link itemprop="mainEntityOfPage" href="https://fredchang14.github.io/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar1.jpg">
@@ -223,12 +227,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="用for迴圈執行setTimeout方法印出1~5有哪些解法 | Fred Chang學習紀錄">
-      <meta itemprop="description" content="我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們來挑戰不用let，選擇用var來作為解決方案，那該如何解決這個問題呢？">
+      <meta itemprop="name" content="學習Firebase Firestore Admin SDK語法 | Fred Chang學習紀錄">
+      <meta itemprop="description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          用for迴圈執行setTimeout方法印出1~5有哪些解法
+          學習Firebase Firestore Admin SDK語法
         </h1>
 
         <div class="post-meta-container">
@@ -239,7 +243,7 @@
       </span>
       <span class="post-meta-item-text">發表於</span>
 
-      <time title="創建時間：2023-10-27 13:15:57" itemprop="dateCreated datePublished" datetime="2023-10-27T13:15:57+08:00">2023-10-27</time>
+      <time title="創建時間：2024-03-06 17:05:13" itemprop="dateCreated datePublished" datetime="2024-03-06T17:05:13+08:00">2024-03-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -247,7 +251,7 @@
       </span>
       <span class="post-meta-item-text">分類於</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Javascript/" itemprop="url" rel="index"><span itemprop="name">Javascript</span></a>
+          <a href="/categories/Firebase/" itemprop="url" rel="index"><span itemprop="name">Firebase</span></a>
         </span>
     </span>
 
@@ -261,37 +265,32 @@
     </span>
 </div>
 
-            <div class="post-description">我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們來挑戰不用let，選擇用var來作為解決方案，那該如何解決這個問題呢？</div>
+            <div class="post-description">因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠！</div>
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們來挑戰不用let，選擇用var來作為解決方案，那該如何解決這個問題呢？</p>
-<h2 id="問題"><a href="#問題" class="headerlink" title="問題"></a>問題</h2><p>使用var不做任何處理，想取得第一秒時取得1、第二秒取得2、…、第五秒取得5</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>卻發現第一秒卻取得5、第二秒也是取得5，一直到第五秒也是取得5。<br>為什麼會發生這樣的問題？因為setTimeout屬於非同步函式，不會馬上執行到(會先被放在queue裡面)，加上i變數是用var宣告的，進行持續累加，累加超過5跳出迴圈，要注意var是全域變數，已經污染到全域了。<br>可以在這段程式碼後面是者印出i來看看，我們可以取得迴圈內的變數i的值console.log(i)，會發現印出5</p>
-<p>我們一般常會用的解法可能是把var改為let就好了</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>就能拿到預期的結果，第一秒時取得1、第二秒取得2、…、第五秒取得5。</p>
-<p>現在我就只想用var不想用let來實驗有沒有辦法得到上述需求</p>
-<hr>
-<h2 id="解法1：使用setTimeout傳入參數方式處理"><a href="#解法1：使用setTimeout傳入參數方式處理" class="headerlink" title="解法1：使用setTimeout傳入參數方式處理"></a>解法1：使用setTimeout傳入參數方式處理</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>setTimeout我們一般使用可能只會傳兩個參數，但setTimeout可以傳入第三個參數，如此一來就不會被全域的問題影響到i值</p>
-<blockquote>
-<p>參考：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/setTimeout">MDN文件：setTimeout</a></p>
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！</li>
+<li>此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠。</li>
+</ul>
+<p>留意：</p>
+<ul>
+<li>須先至 專案設定&gt;&gt;服務帳戶，選擇Node.js，並按下<strong>產生新的私密金鑰</strong>，再按下<strong>產生金鑰</strong>，下載json檔案(將其命名為serviceAccountKey.json)存放到專案內<br><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" data-original="/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/1.PNG"><br><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAMAAABOo35HAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9UExURVlZWdPT07KysmRkZIWFhfT09JmZmWZmZm9vb39/fxkZGUxMTDMzM3p6epCQkKamppubm729venp6cjIyN7e3tbW1s/Pz8LCwnx8fLS0tFZWVoiIiI+Pj6GhoeTk5Glpabu7u93d3evr66CgoJSUlKqqqsnJyeDg4Hd3d8PDw+Xl5bi4uNHR0dvb26Ojo6urq+fn51hYWDg4OCgoKHBwcK2traenp0FBQe7u7vHx8U5OTre3t8zMzHV1df///7GrnpQAAAA/dFJOU///////////////////////////////////////////////////////////////////////////////////AI4mfBcAAAUGSURBVHja7NoJb6M4GMZxY0NCD64kve/pMZ2d3Z297+X7f6zFNmBAMUXa6URl/q9UJSWPUPzrizFWRUlNLgEBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYYIEFAVhggQUWWGBBABZYYIEFFlgQgAUWWGCBBRYEYIEFFlhggQUBWGCBBRZYYEEAFlhggQUWWBCABRZYYIEFFgRggQUWWGCBBQFYYIEFFlhgQQAWWGCBBRZYEIAFFlhggQUWBGCBBRZYn6cCIcRXgvX/h9qcIVBqDdbEM8RCxGCB9QqXYRwHYDHBgwXWl8eKZKiESHI3Ba1kWs3fKixcaJUl1YyeBm7Ocq+yLItUiVBGnXxenSHJolIKEcwHq6ikbOX1YGVzQCTN8LPmSLreghUl9sN4Uw7yajMrLC0TZ1ImzqY6FEop0+pIaEN5HaoOxVuwEqFyc4I46uSlzOLqgxlh6UaR9l3VYWl9Fdoxb1Q90KJtu41pwwFW/WHhTtW8i7TafLCqRsk6bsGw63L9qurXRmuIlbT9lDQnlXU+nBFW1Q2qnZbDprWa2tjR90LZFqx1/+Td/HpGWLlrLDvIwTcx6dQ1Vrntbig68cDms3JwbA5Y1azs1ger6sNV/bbIw1jU81MvNAGrl58RVn8ozW+btF08iGFoAlYvP3csfVur1gJBEIA1uBmue5dhZDOyO2epbmgCVi8/I6x0MMHH9pjsTfBhNzQBq5uPZoQlB0uH3DZG4EZqQ26fL3sZq5uf09Ih6qw3i/pm6BZO0qZX7rrUS68Xsbr5ZE4rePMk08pk9aUZugfqppvs6AM1Acvlo/StP+6EbW06z8hJqxbYp2BZPQUnFsLsKuhQdaHqn5ewbF7KXIn0jWO5MqOQ7RaNLPtbNMmmhimj0GUmYLl8Gs0Lq4wyPbTu1l2QKqHSouzs3OlDIslW5SQsnY/NXmFplyNvEuuLV/Tau9BzwiraDUSwXmysztYWWNtL1psXeumgIrDGaqXvBfUuvtqUYI3V2t1wk1e2msFluJJm6zDJXv/fIfjPP7DAAgsssCiwwAILLLDAosACCyywwAKLAgsssMACC6zt9fDz/v75tyOB+98PD2+ORgKffjw4OP1uJPDxl+Xy8v1I4MPF3t7VNyOB4/vF4uzdzrG+39f1kz/w66Guv/yBvw90KX/gZKkr8Qf+2dOV+gNHC12/7RxrabD2/a31bLAO/a11YbAO/K21MFhLf2s9Gqw9f2vdGqzFu11jnVusE2/gxmI9eQOnFuvYG7i0WH7uK4t15w2cWazrXWP9a7H8f/bQYvm/6IPF+sF/pVssf19Ii/WH/0K2WH/uGuvEWC39gSdj9Twy+Rqri5EZx1gt/IE7Y/XoD1wbq9vd3w1PlufnD2OBp+ebm/uxwPHF6emnscDR4vLy41jg7vHq6sNY4Pr27OyYdRaLUrDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssMCiwAILLLDAAosCCyywwAILLAossMACCyywKLDAAgsssL6u+k+AAQCR9eHtLKvLfwAAAABJRU5ErkJggg==" data-original="/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/2.PNG"></li>
+<li>初始化資料庫，並取得db物件  <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; initializeApp, cert &#125; <span class="keyword">from</span> <span class="string">&quot;firebase-admin/app&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; getFirestore &#125; <span class="keyword">from</span> <span class="string">&quot;firebase-admin/firestore&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> serviceAccount <span class="keyword">from</span> <span class="string">&quot;./serviceAccountKey.json&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">initializeApp</span>(&#123;</span><br><span class="line">    <span class="attr">credential</span>: <span class="title function_">cert</span>(serviceAccount),</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> db = <span class="title function_">getFirestore</span>();</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="分為CRUD方式記錄"><a href="#分為CRUD方式記錄" class="headerlink" title="分為CRUD方式記錄"></a>分為CRUD方式記錄</h2><ul>
+<li>C-(Create)</li>
+<li>R-(Read)</li>
+<li>U-(Update)</li>
+<li>D-(Delete)</li>
+</ul>
+<h1 id="C-Create-創建資料"><a href="#C-Create-創建資料" class="headerlink" title="C-(Create)創建資料"></a>C-(Create)創建資料</h1><h1 id="R-Read-查詢資料"><a href="#R-Read-查詢資料" class="headerlink" title="R-(Read)查詢資料"></a>R-(Read)查詢資料</h1><h1 id="U-Update-更新資料"><a href="#U-Update-更新資料" class="headerlink" title="U-(Update)更新資料"></a>U-(Update)更新資料</h1><h1 id="D-Delete-刪除文件"><a href="#D-Delete-刪除文件" class="headerlink" title="D-(Delete)刪除文件"></a>D-(Delete)刪除文件</h1><blockquote>
+<p>參考資料<br><a target="_blank" rel="noopener" href="https://firebase.google.com/docs/firestore?hl=zh-tw">Firebase官方文件 </a></p>
 </blockquote>
-<h2 id="解法2：使用bind方式處理"><a href="#解法2：使用bind方式處理" class="headerlink" title="解法2：使用bind方式處理"></a>解法2：使用bind方式處理</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params">i</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">  &#125;.<span class="title function_">bind</span>(<span class="literal">null</span>, i), i * <span class="number">1000</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>這個方式是用bind方式，因為沒有要綁任何對象，所以bind方法第一個參數填上null即可，但二個參數就要填上setTimeout傳入的參數i，如此一來也能達到需求</p>
-<blockquote>
-<p>參考：<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-TW/docs/Web/JavaScript/Reference/Global_Objects/Function/bind">MDN文件：bind</a></p>
-</blockquote>
-<h2 id="解法3：使用閉包-closure"><a href="#解法3：使用閉包-closure" class="headerlink" title="解法3：使用閉包(closure)"></a>解法3：使用閉包(closure)</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++) &#123;</span><br><span class="line">  (<span class="keyword">function</span>(<span class="params">x</span>) &#123;</span><br><span class="line">    <span class="built_in">setTimeout</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(x)</span><br><span class="line">    &#125;, x * <span class="number">1000</span>)</span><br><span class="line">  &#125;)(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>透過傳入i給立即函式的方式，立即函式裡面用x變數將i變數的值保存下來，進而達到預期效果。<br>註：閉包要有巢狀的function才算是閉包哦</p>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>以上三種方式就是今天限制自己不用let方式，只使用var來達到預期的結果。不過在正式專案中，還是推薦用let的方式來做這個需求會更簡潔，也更好懂，像筆者的一些專案是不會看到任何var的蹤影。</p>
-
+<!-- flag of hidden posts -->
     </div>
 
     
@@ -316,22 +315,11 @@
 
           <div class="post-tags">
               <a href="/tags/Javascript/" rel="tag"><i class="fa fa-tag"></i> Javascript</a>
+              <a href="/tags/Firebase/" rel="tag"><i class="fa fa-tag"></i> Firebase</a>
           </div>
 
         
 
-          <div class="post-nav">
-            <div class="post-nav-item">
-                <a href="/2023/10/27/%E6%90%9E%E6%87%82Javascript%E7%9A%84this/" rel="prev" title="搞懂Javascript的this">
-                  <i class="fa fa-angle-left"></i> 搞懂Javascript的this
-                </a>
-            </div>
-            <div class="post-nav-item">
-                <a href="/2023/10/27/%E6%8E%A2%E8%A8%8EVue%E7%9A%84watch%E6%A9%9F%E5%88%B6/" rel="next" title="探討Vue的watch機制">
-                  探討Vue的watch機制 <i class="fa fa-angle-right"></i>
-                </a>
-            </div>
-          </div>
     </footer>
   </article>
 </div>
@@ -395,7 +383,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"FredChang14","repo":"fredchang14.github.io","client_id":"c649ec83ba94e948b86f","client_secret":"03f997a902a0d411b1c4535fb7b8a5694197ffaf","admin_user":"FredChang14","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-TW","labels":"Gitalk","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"38c95bd78d191f0f389b7692ab4c5204"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"FredChang14","repo":"fredchang14.github.io","client_id":"c649ec83ba94e948b86f","client_secret":"03f997a902a0d411b1c4535fb7b8a5694197ffaf","admin_user":"FredChang14","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-TW","labels":"Gitalk","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"de21f39c6a88a933c2c0721fb603bf16"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 
