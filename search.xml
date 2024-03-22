@@ -1,6 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>學習Firebase Firestore(Admin SDK語法)</title>
+    <url>/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
+<li>繼上一篇v9語法，實戰我比較少會使用，接下來紀錄一下較常用的Admin SDK方式操作資料庫！</li>
+<li>此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠。</li>
+</ul>
+<p>留意：</p>
+<ul>
+<li>須先至 專案設定&gt;&gt;服務帳戶，選擇Node.js，並按下<strong>產生新的私密金鑰</strong>，再按下<strong>產生金鑰</strong>，下載json檔案(將其命名為serviceAccountKey.json)存放到專案內<br><img src="/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/1.PNG"><br><img src="/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/2.PNG"></li>
+<li>初始化資料庫，並取得db物件  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; initializeApp, cert &#125; <span class="keyword">from</span> <span class="string">&quot;firebase-admin/app&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; getFirestore &#125; <span class="keyword">from</span> <span class="string">&quot;firebase-admin/firestore&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> serviceAccount <span class="keyword">from</span> <span class="string">&quot;./serviceAccountKey.json&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">initializeApp</span>(&#123;</span><br><span class="line">    <span class="attr">credential</span>: <span class="title function_">cert</span>(serviceAccount),</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> db = <span class="title function_">getFirestore</span>();</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="分為CRUD方式記錄"><a href="#分為CRUD方式記錄" class="headerlink" title="分為CRUD方式記錄"></a>分為CRUD方式記錄</h2><ul>
+<li>C-(Create)</li>
+<li>R-(Read)</li>
+<li>U-(Update)</li>
+<li>D-(Delete)</li>
+</ul>
+<h1 id="C-Create-創建資料"><a href="#C-Create-創建資料" class="headerlink" title="C-(Create)創建資料"></a>C-(Create)創建資料</h1><ul>
+<li>創建文件(使用set，可命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料)</span><br></pre></td></tr></table></figure>
+如果文件不存在則創建，若存在則整個物件覆蓋；若不想整個物件覆蓋，只要修改則要加上參數物件{ merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;LA&#x27;</span>).<span class="title function_">set</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;Los Angeles&#x27;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&#x27;CA&#x27;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&#x27;USA&#x27;</span></span><br><span class="line">    &#125;, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
+<li>創建文件(使用add，Firebase自動命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">add</span>(物件資料);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">add</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;Tokyo&#x27;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&#x27;Japan&#x27;</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;創建文件的id: &#x27;</span>, res.<span class="property">id</span>);</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+可以取得創建文件的id</li>
+</ul>
+<h1 id="R-Read-查詢資料"><a href="#R-Read-查詢資料" class="headerlink" title="R-(Read)查詢資料"></a>R-(Read)查詢資料</h1><ul>
+<li><p>查詢文件<br><strong>語法</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">get</span>();</span><br></pre></td></tr></table></figure>
+<p><strong>範例</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> doc = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;SF&#x27;</span>).<span class="title function_">get</span>();</span><br><span class="line">    <span class="keyword">if</span> (doc.<span class="property">exists</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;文件資料&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;查無文件&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>可以使用.data()，取得資料</p>
+</li>
+<li><p>從集合查詢多個文件<br><strong>語法</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> citiesRef = db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> snapshot = <span class="keyword">await</span> citiesRef.<span class="title function_">get</span>();</span><br></pre></td></tr></table></figure>
+<p>如果有條件，加在.get()前面，例如變成<code>const snapshot = await citiesRef.where(&#39;欄位名&#39;, &#39;==&#39;, true).get();</code><br><strong>範例</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> citiesRef = db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> snapshot = <span class="keyword">await</span> citiesRef.<span class="title function_">where</span>(<span class="string">&#x27;capital&#x27;</span>, <span class="string">&#x27;==&#x27;</span>, <span class="literal">true</span>).<span class="title function_">get</span>();</span><br><span class="line">    <span class="keyword">if</span> (snapshot.<span class="property">empty</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;No matching documents.&#x27;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    snapshot.<span class="title function_">forEach</span>(<span class="function"><span class="params">doc</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&#x27;=&gt;&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>使用for…of或是傳統for，必須針對snapshot再加上.docs跑迴圏(如使用forEach則直接使用snapshot)。最後再使用.data()，取得資料。<br>例如</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> doc <span class="keyword">of</span> snapshot.<span class="property">docs</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&#x27;=&gt;&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="U-Update-更新資料"><a href="#U-Update-更新資料" class="headerlink" title="U-(Update)更新資料"></a>U-(Update)更新資料</h1><ul>
+<li>更新文件(使用update，非整個物件覆蓋)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">update</span>(物件資料);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;LA&#x27;</span>).<span class="title function_">update</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;new country!&quot;</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
+<li>更新文件(使用set，替換全部文件內容)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料);</span><br></pre></td></tr></table></figure>
+若不全部替換，務必加上, { merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><br>  同本文<strong>創建文件</strong>set方法</li>
+</ul>
+<p><strong>*小提醒：使用update等同於set加上{ merge: true }，效果完全相同</strong></p>
+<h1 id="D-Delete-刪除文件"><a href="#D-Delete-刪除文件" class="headerlink" title="D-(Delete)刪除文件"></a>D-(Delete)刪除文件</h1><p><strong>語法</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">delete</span>();</span><br></pre></td></tr></table></figure>
+<p><strong>範例</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;DC&#x27;</span>).<span class="title function_">delete</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>透過紀錄語法，讓以後的自己方便查找資訊，常常會透過後端與資料庫溝通的方式，取得資料之後再傳遞給前端，這樣作法相比上一篇v9作法更安全！</p>
+<blockquote>
+<p>參考資料<br><a href="https://firebase.google.com/docs/firestore?hl=zh-tw">Firebase官方文件 </a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Firebase</category>
+      </categories>
+      <tags>
+        <tag>Firebase</tag>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>使用Python串接Azure OpenAI服務</title>
     <url>/2023/11/01/%E4%BD%BF%E7%94%A8Python%E4%B8%B2%E6%8E%A5Azure%20OpenAI%E6%9C%8D%E5%8B%99/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由於工作需求，我開始使用Azure AI平台。在網路上尋找相關教學時，在打Azure openai的api前所需要填入的參數不知道該往哪裡找。為了方便其他使用者，在這裡記錄一份詳細的指南，說明如何在Azure平台上迅速找到與Azure OpenAI相關的資訊。隨後，我將展示如何將這些資訊正確填入Python程式碼中，並成功執行。</p>
@@ -47,6 +113,28 @@
       </tags>
   </entry>
   <entry>
+    <title>如何在Azure複製現有VM，達成快速建置VM目的</title>
+    <url>/2024/02/27/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因為工作需要，需要建立多台虛擬機器(以下簡稱VM)，其內容物都是一樣的VM(OS、已有的程式…)，從零開始建立實在太慢，搜尋一些方式後整理出我最後解決方案及建立步驟說明。</p>
+<p>步驟順序大致為 1. 從硬碟建立快照 2. 以此快照建立硬碟 3. 以此磁碟建立VM</p>
+<h2 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h2><ol>
+<li><p>從硬碟建立快照<br> (1) 於Azure平台上點選虛擬機器服務<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/1.PNG"><br> (2) 呈現出目前所有的VM，我們這次打算進行AP-01這台VM的快速複製<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/2.PNG"><br> (3) 進到AP-01後，點選左方<strong>磁碟</strong>(註：此VM停不停止運作都沒關係)<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/3.PNG"><br> (4) 點選磁碟名稱<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/4.PNG"><br> (5) 進入該磁碟頁面後，點選<strong>建立快照集</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/5.PNG"><br> (6) 為此快照取一個名稱，其餘用預設值就好，並按下檢閱+建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/6.PNG"><br> (7) 完成建立快照！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/7.PNG"></p>
+</li>
+<li><p>以此快照建立硬碟<br> (1) 點選<strong>建立磁碟</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/8.PNG"><br> (2) 為此磁碟取一個名稱，其餘用預設值就好，並按下檢閱+建立，再按下建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/9.PNG"><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/11.PNG"><br> (3) 完成建立磁碟！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/12.PNG"></p>
+</li>
+<li><p>以此磁碟建立VM<br> (1) 點選<strong>建立VM</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/13.PNG"><br> (2) 為此VM取一個名稱，其餘用預設值就好，並按下檢閱+建立，再按下建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/14.PNG"><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/15.PNG"><br> (3) 完成建立VM！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/16.PNG"></p>
+</li>
+</ol>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>反覆透過以上方式可以建立多台VM(快照建立一次即可，從新增硬碟步驟開始實作即可)，不用從零實作VM架設，實在很方便！紀錄建置相關步驟，提醒有同樣需求的人和未來的自己有相同需求時，可以快速建立VM。</p>
+]]></content>
+      <categories>
+        <category>Azure</category>
+      </categories>
+      <tags>
+        <tag>Azure</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>如何在Nuxt3使用vue-social-sharing套件</title>
     <url>/2023/10/27/%E5%A6%82%E4%BD%95%E5%9C%A8Nuxt3%E4%BD%BF%E7%94%A8vue-social-sharing%E5%A5%97%E4%BB%B6/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>vue-social-sharing是用來透過社群軟體分享網頁內容的一個套件，例如：Facebook、Line 社群軟體，在npm有高手寫了一個vue-social-sharing套件，在Vue和Nuxt2可以成功用說明成功安裝並使用，但在Nuxt3會引入失敗，所以這一篇文章就來實現如何在Nuxt3將此套件引入並實作相關邏輯出來。</p>
@@ -54,10 +142,10 @@
 <li><p>先進行套件安裝 npm install — save vue-social-sharing@next</p>
 </li>
 <li><p>嘗試依據npm作者提供之方式引入，在nuxt.config.ts檔案內寫上modules屬性內寫入套件名。</p>
- <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtConfig</span>(&#123;</span><br><span class="line">    <span class="attr">modules</span>: [</span><br><span class="line">        <span class="string">&#x27;vue-social-sharing/nuxt&#x27;</span></span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>但無法順利引用，判斷套件可使用在Nuxt2，無法使用在Nuxt3。</p>
-<ol start="3">
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtConfig</span>(&#123;</span><br><span class="line">    <span class="attr">modules</span>: [</span><br><span class="line">        <span class="string">&#x27;vue-social-sharing/nuxt&#x27;</span></span><br><span class="line">    ]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p> 但無法順利引用，判斷套件可使用在Nuxt2，<strong>無法使用在Nuxt3</strong>。</p>
+</li>
 <li><p>解決方法：使用plungins方式引用此套件</p>
 <p> (1)於plugins內新增socialSharing.js檔案，內容如下</p>
  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">VueSocialSharing</span> <span class="keyword">from</span> <span class="string">&quot;vue-social-sharing&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineNuxtPlugin</span>(<span class="function"><span class="params">nuxtApp</span> =&gt;</span> &#123;</span><br><span class="line">    nuxtApp.<span class="property">vueApp</span>.<span class="title function_">use</span>(<span class="title class_">VueSocialSharing</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
@@ -82,6 +170,98 @@
         <tag>Javascript</tag>
         <tag>Vue</tag>
         <tag>Nuxt</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何整合Vue和.NetCore及部署到IIS上線</title>
+    <url>/2023/11/10/%E5%A6%82%E4%BD%95%E5%B0%87Vue%E5%92%8C-NetCore%E5%8F%8A%E9%83%A8%E7%BD%B2%E5%88%B0IIS%E4%B8%8A%E7%B7%9A/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因為工作關係，團隊考慮將前端改為Vue框架來進行開發，後端則是使用.NetCore，所以建置目標為前端為Vue，後端為.Net6的環境，透過這篇筆記提醒未來的自己以及給需要的人參考，為確保環境能夠部署上線，也會示範部署到IIS的步驟。</p>
+<h2 id="IDE環境版本"><a href="#IDE環境版本" class="headerlink" title="IDE環境版本"></a>IDE環境版本</h2><p>Visual Studio 2022  版本17.7.4</p>
+<blockquote>
+<p>會特別註明版本是因為前幾個版本似乎沒有官方提供的前後端整合選項，所以如果在選擇專案類型沒有看到跟筆者一樣的時候，請留意一下Visual Studio 2022版本<br>在官方還沒有提供前後端整合版本前，已經有高手做的專案模板出來，也是可以使用哦！可以看看： <a href="https://marketplace.visualstudio.com/items?itemName=MakotoAtsu.AspNetCoreViteStarter">AspNetCore_Vite_Starter</a></p>
+</blockquote>
+<p>不過這一篇我們是用官方提供的版本來進行建置，我們繼續往下看</p>
+<h2 id="建立專案"><a href="#建立專案" class="headerlink" title="建立專案"></a>建立專案</h2><ol>
+<li><p>打開Visual Studio 2022，點選<strong>建立新的專案</strong><br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/1.PNG"></p>
+</li>
+<li><p>找到「Vue與ASP.NET Core(預覽)」專案類型，並點選下一步<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/3.PNG"></p>
+</li>
+<li><p>命名專案名稱，名稱自取即可，然後按建立<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/4.PNG"></p>
+</li>
+</ol>
+<h2 id="本地環境更改及運行專案"><a href="#本地環境更改及運行專案" class="headerlink" title="本地環境更改及運行專案"></a>本地環境更改及運行專案</h2><ol>
+<li><p>找到後端專案，也就是<strong>webapi</strong>，點選右鍵，選擇屬性<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/5.PNG"></p>
+</li>
+<li><p>將目標Framework本來為.Net 7.0 改為.Net 6.0，因6.0版本為長期支援版本<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/6.PNG"></p>
+</li>
+<li><p>這時候我們點選上方的<strong>開始</strong>，來跑跑看程式是不是能夠run起來<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/10.PNG"><br>會得到以下錯誤<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/7.PNG"><br>原因是OpenApi版本不相容於.net6.0版本</p>
+</li>
+<li><p>點選<strong>專案</strong>，在點選管理<strong>NuGet套件</strong>，將Microsoft.AspNetCore.OpenApi套件解除安裝<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/9.PNG"></p>
+<p> 做到這邊按下<strong>開始</strong>(如步驟3)<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/10.PNG"><br> 還是會噴錯，發現有處理DateOnly的相關錯誤<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/33.PNG"><br> 原因是因為雖然.Net6雖然有引入DateOnly的類別可以使用，但在轉為Json格式的時候會發現無法轉換問題。</p>
+<blockquote>
+<p>有興趣可以看看這篇文章：<a href="https://storck.io/posts/serializing-net-6-dateonly-to-json/">https://storck.io/posts/serializing-net-6-dateonly-to-json/</a> 裡面有提到解決方式，但我們這篇文章就簡單處理，不要使用DateOnly即可。</p>
+</blockquote>
+</li>
+<li><p>接著我們到後端ewbapi專案，把Controllers內WeatherForecastController.cs打開，</p>
+<p> 把<code>Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index))</code>這行改為<code>Date = DateTime.Now.AddDays(index)</code></p>
+</li>
+</ol>
+<p><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/12.PNG"></p>
+<ol start="6">
+<li><p>接著也到WeatherForecast.cs這個類別檔把DateOnly的類別改為DateTime，這樣才能對應上，否則編譯會報錯<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/14.PNG"></p>
+</li>
+<li><p>按下<strong>開始</strong>(如步驟3)，我們就可以看到Vue前端畫面就成功出來了，並且資料也是從後端來的<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/31.PNG"></p>
+</li>
+</ol>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>為什麼前端的port是5173，為什麼可以打到後端的api呢？</p>
+<ol>
+<li><p>看一下後端webapi專案的Properties&#x2F;launchSettings.json裡面的後端port是多少<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/16.PNG"><br>我們可以看到是7038</p>
+</li>
+<li><p>再來看一下前端vueapp專案的vite.config.js配置<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/17.PNG"><br>可以看到是用Vite內可設定Proxy代理機制讓前端可以打到後端api(也就是說前端起一個Proxy server用代理的方式去打api)<br>如果不這樣設定，後端就要設定Cors然後用不同的port去互做溝通，也能取得相同的效果，不過用Proxy的方式可以順利的處理掉還要寫Cors的問題，也較為簡潔</p>
+</li>
+</ol>
+<h2 id="部署上線"><a href="#部署上線" class="headerlink" title="部署上線"></a>部署上線</h2><p>若要部署上線的話，我們要把前端檔案做編譯打包，所以概念就是由後端host讀取前端靜態檔案</p>
+<blockquote>
+<p>為什麼要打包呢？因為瀏覽器是看不懂vue檔的，所以要用前端打包工具(像我們這邊是用Vite)來做打包</p>
+</blockquote>
+<ol>
+<li><p>到後端webapi專案的Programs.cs檔內加上，放在原有if的判斷下方</p>
+<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    app.UseDefaultFiles();</span><br><span class="line">    app.UseStaticFiles();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如以下<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/18.PNG"></p>
+</li>
+<li><p>將後端webapi專案點選右鍵，並且按下<strong>發佈</strong><br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/19.PNG"></p>
+<p> 選擇<strong>資料夾</strong>，並點選<strong>下一步</strong><br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/20.PNG"></p>
+<p> 先在電腦某處創好一個空資料夾(資料夾可自行取名)，然後<strong>資料夾位置</strong>選擇它，設置好後按下<strong>完成</strong><br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/21.PNG"></p>
+<p> 繼續以下步驟<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/22.PNG"><br> 點選發佈<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/24.PNG"></p>
+</li>
+<li><p>開啟電腦上的IIS管理介面，左邊選單針對<strong>站台</strong>點選右鍵，新增網站<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/25.PNG"></p>
+</li>
+<li><p>設置網站資訊，取個站台名稱(自行取名即可)，也選擇剛剛後端發佈程式的資料夾(參考第2步驟)，連接埠也設置一個你目前沒有在使用的port，按下確定<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/26.PNG"></p>
+<p> 還沒完成喔，請等等</p>
+</li>
+<li><p>接下來回到Visual Studio開啟<strong>開發人員PowerShell</strong>，輸入以下指令<br>移動到前端資料夾</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd vueapp</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
+<p>打包出一個資料夾，裡面都是打包後的靜態檔案，如下圖<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/27.PNG"></p>
+</li>
+<li><p>複製剛剛創建出來的dist資料夾到發佈站台的資料夾<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/28.PNG"><br>並改名為<strong>wwwroot</strong>，因為這個名稱為靜態檔案的入口<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/29.PNG"></p>
+</li>
+<li><p>到瀏覽器上面輸入<a href="http://localhost:7688/">http://localhost:7688</a>  (port會根據在第4步驟設定會有所不同) ，順利呈現頁面，並且也能看到後端回來的資料<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/30.PNG"></p>
+<p> 如出現ANCM 500.31的錯誤頁面，請下載<a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0">.NET6.0 SDK</a><strong>ASP.NET Core Runtime</strong>，下載Hosting Bundle並安裝即可<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/32.PNG"></p>
+</li>
+</ol>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
+<li>透過這個建置流程讓我更了解建置環境的流程。</li>
+<li>官方提供的範例，打包工具是使用Vite，算是這幾年出現的打包新星，速度非常的快，有別於傳統Vue CLI，所以建置Vue前端起來可以說是相當快意！</li>
+<li>本來沒有官方的版本，建置起來有點痛苦，容易漏東漏西，容易造成無法順利建置的問題。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>系統整合</category>
+      </categories>
+      <tags>
+        <tag>Vue</tag>
+        <tag>.NetCore</tag>
       </tags>
   </entry>
   <entry>
@@ -196,6 +376,71 @@
       </tags>
   </entry>
   <entry>
+    <title>學習Firebase Firestore語法(v9)</title>
+    <url>/2024/03/06/%E5%AD%B8%E7%BF%92Firebase%E7%9A%84Firestore%E8%AA%9E%E6%B3%95(v9)/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！</p>
+<p>留意：</p>
+<ul>
+<li><p>v9版本就是應用到Firebase文件內的Web modular API，也就是利用前端操作資料庫，與Admin SDK和v8版本(Web namespaced API)語法存在一些差異。</p>
+</li>
+<li><p>因為是前端操作資料庫，需要到專案設定&gt;&gt;一般設定，新增應用程式，選擇Web版本。並且要把Firestore Database裡的規則更改為以下</p>
+  <figure class="highlight fsharp"><table><tr><td class="code"><pre><span class="line">rules_version <span class="operator">=</span> <span class="string">&#x27;2&#x27;</span>;</span><br><span class="line"></span><br><span class="line">service cloud.<span class="keyword">firestore</span> &#123;</span><br><span class="line">    <span class="keyword">match</span> <span class="operator">/</span>databases<span class="operator">/</span>&#123;database&#125;<span class="operator">/</span><span class="keyword">documents</span> &#123;</span><br><span class="line">        <span class="keyword">match</span> <span class="operator">/</span>&#123;document<span class="operator">=**</span>&#125; &#123;</span><br><span class="line">            allow read, write<span class="operator">:</span> <span class="keyword">if</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>  這樣才能讀寫資料庫，否則無權限會出現***Uncaught (in promise) FirebaseError: Missing or insufficient permissions.***的錯誤。<br>  但要留意，上述寫法代表讀寫全部開放，所以不安全，請以實際情況調整之。</p>
+</li>
+<li><p>所有的動作都是非同步，所以在Javascript內必須做非同步處理，以下皆使用async&#x2F;await示範！</p>
+</li>
+<li><p>初始化資料庫，並取得db物件</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; initializeApp &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/app&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; getFirestore &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> firebaseConfig = &#123;</span><br><span class="line">    <span class="attr">apiKey</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">authDomain</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">projectId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">storageBucket</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">messagingSenderId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">appId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">initializeApp</span>(firebaseConfig);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> db = <span class="title function_">getFirestore</span>(app);</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="分為CRUD方式記錄"><a href="#分為CRUD方式記錄" class="headerlink" title="分為CRUD方式記錄"></a>分為CRUD方式記錄</h2><ul>
+<li>C-(Create)</li>
+<li>R-(Read)</li>
+<li>U-(Update)</li>
+<li>D-(Delete)</li>
+</ul>
+<h1 id="C-Create-創建資料"><a href="#C-Create-創建資料" class="headerlink" title="C-(Create)創建資料"></a>C-(Create)創建資料</h1><ul>
+<li>創建文件(使用setDoc，可命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
+如果文件不存在則創建，若存在則整個物件覆蓋；若不想整個物件覆蓋，只要修改則要加上參數物件{ merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, setDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>; </span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;USA&quot;</span></span><br><span class="line">    &#125;, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
+<li>創建文件(使用addDoc，Firebase自動命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">addDoc</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;集合名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; collection, addDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>; </span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> docRef = <span class="keyword">await</span> <span class="title function_">addDoc</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;cities&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Tokyo&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;Japan&quot;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Document written with ID: &quot;</span>, docRef.<span class="property">id</span>);</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+可以取得創建文件的id</li>
+</ul>
+<h1 id="R-Read-查詢資料"><a href="#R-Read-查詢資料" class="headerlink" title="R-(Read)查詢資料"></a>R-(Read)查詢資料</h1><ul>
+<li>查詢文件<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">getDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>))</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, getDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> docSnap = <span class="keyword">await</span> <span class="title function_">getDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>));</span><br><span class="line">    <span class="keyword">if</span> (docSnap.<span class="title function_">exists</span>()) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Document data:&quot;</span>, docSnap.<span class="title function_">data</span>());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;No such document!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+使用.data()，取得資料</li>
+<li>從集合查詢多個文件<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> q = <span class="title function_">query</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;集合名&quot;</span>));</span><br><span class="line"><span class="keyword">const</span> querySnapshot = <span class="keyword">await</span> <span class="title function_">getDocs</span>(q);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; collection, query, where, getDocs &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> q = <span class="title function_">query</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;cities&quot;</span>));</span><br><span class="line">    <span class="keyword">const</span> querySnapshot = <span class="keyword">await</span> <span class="title function_">getDocs</span>(q);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> doc <span class="keyword">of</span> querySnapshot.<span class="property">docs</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&quot; =&gt; &quot;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+使用for…of，必須針對querySnapshot再加上.docs跑迴圏(如使用forEach則直接使用querySnapshot)。最後再使用.data()，取得資料。</li>
+</ul>
+<h1 id="U-Update-更新資料"><a href="#U-Update-更新資料" class="headerlink" title="U-(Update)更新資料"></a>U-(Update)更新資料</h1><ul>
+<li>更新文件(使用updateDoc，非整個物件覆蓋)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">updateDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, updateDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">updateDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;new country!&quot;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
+<li>更新文件(使用setDoc，整個物件覆蓋全部文件內容)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
+若不覆蓋，務必加上, { merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
+<strong>範例</strong><br>  同本文<strong>創建文件</strong>setDoc方法</li>
+</ul>
+<p><strong>*小提醒：使用updateDoc等同於setDoc加上{ merge: true }，效果完全相同</strong></p>
+<h1 id="D-Delete-刪除文件"><a href="#D-Delete-刪除文件" class="headerlink" title="D-(Delete)刪除文件"></a>D-(Delete)刪除文件</h1><p><strong>語法</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">deleteDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>));</span><br></pre></td></tr></table></figure>
+<p><strong>範例</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, deleteDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">deleteDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>));</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>透過紀錄語法，讓以後的自己方便查找資訊，前端撈取資料雖然方便，但有時候要留意安全性問題！</p>
+<blockquote>
+<p>參考資料<br><a href="https://firebase.google.com/docs/firestore?hl=zh-tw">Firebase官方文件 </a></p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Firebase</category>
+      </categories>
+      <tags>
+        <tag>Firebase</tag>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>探討Javascript的Hoisting</title>
     <url>/2023/10/31/%E6%8E%A2%E8%A8%8EJavascript%E7%9A%84Hoisting/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Hoisting(中文翻作提升)，這個概念在Javascript常常被使用到，特別在使用var和傳統function時就深深體會到Javascript特殊的地方，這一篇我們來簡單了解一下Hoisting的運作。</p>
@@ -220,6 +465,65 @@
 <li>Hoisting的宣告是指宣告的動作被提升，所以使用var來宣告變數或函式時要特別留意。</li>
 <li>在實際專案中，我也較習慣宣告變數都使用let或是const，不會使用var，這樣就能避開Hoisting的問題；至於宣告函式我也習慣用const方式宣告，可以避免誤指派值的事情發生。</li>
 </ol>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搞懂Javascript傳值、傳址觀念</title>
+    <url>/2023/11/07/%E6%90%9E%E6%87%82Javascript%E5%82%B3%E5%80%BC%E3%80%81%E5%82%B3%E5%9D%80%E8%A7%80%E5%BF%B5/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>剛開始接觸傳值(pass by value)和傳址(pass by reference)時，常常會搞混，如果觀念似懂非懂的話在開發專案的時候可能會不自覺踩到雷，這一篇就把這個觀念好好記錄下來。</p>
+<h2 id="傳值-pass-by-value"><a href="#傳值-pass-by-value" class="headerlink" title="傳值(pass by value)"></a>傳值(pass by value)</h2><p>string、number、boolean、null、undefined都是<strong>基本型別</strong>，所以會根據pass by value的方式來運作，另外function 也是以此方式運作<br>舉例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">666</span>;</span><br><span class="line"><span class="keyword">let</span> b = a;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a); <span class="comment">//666</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(b); <span class="comment">//666</span></span><br><span class="line"></span><br><span class="line">a = <span class="number">777</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a); <span class="comment">//777</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(b); <span class="comment">//666</span></span><br></pre></td></tr></table></figure>
+<p>第2行：把a值指派給b變數，所以b值為666<br>第6行：把a值設為777<br>第8行：b值還是本來的值，也就是666</p>
+<h2 id="傳址-pass-by-reference"><a href="#傳址-pass-by-reference" class="headerlink" title="傳址(pass by reference)"></a>傳址(pass by reference)</h2><p>物件裡面的屬性會根據pass by reference來運作</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> son = &#123;</span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> father = son;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line">son.<span class="property">age</span> = <span class="number">40</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 40</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 40</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son === father); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+<p>第4行：把son值指派給father變數，所以father值為<code>&#123;age: 18&#125;</code><br>第7行：將son的age屬性改為40<br>第9行：father的age屬性值也會變成40<br>第11行：son 完全等於father，因為是<em>共用一份記憶體</em></p>
+<p>陣列也會依據pass by reference來運作</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">let</span> arr2 = arr1;</span><br><span class="line"></span><br><span class="line">arr1.<span class="title function_">push</span>(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr2);</span><br></pre></td></tr></table></figure>
+<p>第4行：針對arr1再多push4的值<br>第6行：也改動到了arr2的值</p>
+<p>所以常常在實戰中，習慣複製一份出來，再做相關操作<br>可以在第2行改為<code>let arr2 = arr1.slice(0);</code>或是用ES6擴展符<code>let arr2 = [ ...arr1 ]</code>方式來賦值 (前提裡面的元素不要是物件或陣列)<br>如此一來arr2就不會受到任何影響了</p>
+<h2 id="其他種情況"><a href="#其他種情況" class="headerlink" title="其他種情況"></a>其他種情況</h2><p>如果我們現在是把整個物件取代掉，會發生什麼事呢？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> son = &#123;</span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> father = son;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line">son = &#123; <span class="attr">age</span>: <span class="number">5</span> &#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 5</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br></pre></td></tr></table></figure>
+<p>第7行：son賦予整個物件<code>&#123; age: 5 &#125;</code><br>第9行：father的age仍然是18，因為son是重新賦值，會產生一個新的實體參考，所以不會影響到father的age值</p>
+<p>這種情況有人稱它為pass by sharing，也有人會認為說這個其實就是pass by value，我們就不在名詞上面爭議，理解一下概念即可。<br>陣列也會有這樣的情況，如果是賦予一個全新陣列，也會跟本來的獨立，這邊就不額外舉例了。</p>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
+<li>了解pass by value和pass by reference的差異</li>
+<li>僅修改物件或陣列裡面的值以及賦予整個物件或陣列，結果會不同(因記憶體指向的差異)</li>
+</ol>
+]]></content>
+      <categories>
+        <category>Javascript</category>
+      </categories>
+      <tags>
+        <tag>Javascript</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>搞懂Javascript的this</title>
+    <url>/2023/10/27/%E6%90%9E%E6%87%82Javascript%E7%9A%84this/</url>
+    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Javascript程式語言中，常面臨到this，但也很常搞不太清楚this指向的對象是誰，而造成程式的一些bug，透過這篇文章來釐清並整理一下this的觀念，以下將用各情境來說明。</p>
+<hr>
+<h2 id="情境1-直接宣告this"><a href="#情境1-直接宣告this" class="headerlink" title="情境1-直接宣告this"></a>情境1-直接宣告this</h2><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(this) <span class="comment">//Window</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>會發現無任何包裝，直接印出this，會指向Window物件</p>
+<h2 id="情境2-獨立函式內的this"><a href="#情境2-獨立函式內的this" class="headerlink" title="情境2-獨立函式內的this"></a>情境2-獨立函式內的this</h2><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">testFn</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(this); <span class="comment">//Window</span></span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(this.innerWidth); <span class="comment">//可以印出視窗的寬度</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>獨立函式內的this也是指向Window物件</p>
+<h2 id="情境3-物件方法內的this"><a href="#情境3-物件方法內的this" class="headerlink" title="情境3-物件方法內的this"></a>情境3-物件方法內的this</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;Fred&quot;</span>,</span><br><span class="line">  <span class="attr">say</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//person物件本身</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">name</span>); <span class="comment">//Fred</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">person.<span class="title function_">say</span>();</span><br></pre></td></tr></table></figure>
+<p>可以看出物件方法內的this就是物件本身，所以也能因此再找出其他屬性或方法，如name屬性，就印出Fred。<br>這時候我們來實驗一下，把傳統function改為箭頭函式會發生什麼事情呢？</p>
+<figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line">let person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;Fred&quot;</span>,</span><br><span class="line">  <span class="attr">say</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(this); <span class="comment">//Window</span></span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(this.name); <span class="comment">//undefined</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">person.say();</span><br></pre></td></tr></table></figure>
+<p>這時候發現this竟然會印出Window物件，為什麼呢？因為如果用箭頭函式，就沒有自己的this，所以如果在箭頭函式內沒有找到this變數，就會往外找，就直接找到Window物件，所以也因為Window沒有name的屬性，自然this.name就印出undefined了。所以使用箭頭函式時要特別注意一下這個觀念。</p>
+<h2 id="情境4-事件處理function"><a href="#情境4-事件處理function" class="headerlink" title="情境4-事件處理function"></a>情境4-事件處理function</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//document元素</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="string">&quot;我被點到了&quot;</span>;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>this就是觸發事件的對象物件，像上述範例來說，就是document元素。<br>若改為箭頭函式，會發生什麼事呢？</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//Window</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="string">&quot;我被點到了&quot;</span>;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>在情境3時我們有提到箭頭函式沒有自己的this，所以函式內的this就是往外找，也找到了Window物件，因此，如果我們點一下畫面會直接報錯Uncaught TypeError: Cannot set properties of undefined (setting ‘innerHTML’)</p>
+<h2 id="情境5-建構函式-Constructor-Function"><a href="#情境5-建構函式-Constructor-Function" class="headerlink" title="情境5-建構函式(Constructor Function)"></a>情境5-建構函式(Constructor Function)</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Person</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//&#123;&#125;</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = <span class="string">&quot;Fred&quot;</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">age</span> = <span class="number">18</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> p1 = <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(p1); <span class="comment">//&#123;age: 18,name: &quot;Fred&quot;&#125;</span></span><br></pre></td></tr></table></figure>
+<p>這個範例可以發現第2行的this印出來是Person空白物件，不是一般物件。</p>
+<hr>
+<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>在做專案的時候常常因為追求語法閱讀與簡潔所以常會用到this，但往往沒有搞懂一些概念而造成意外的bug發生，如果再加上箭頭函式的觀念也沒有搞清楚的話，除錯起來也是很辛苦的，所以特別將this用法整理出來，也提醒自己要留意this的指向。</p>
 ]]></content>
       <categories>
         <category>Javascript</category>
@@ -337,35 +641,6 @@
       </tags>
   </entry>
   <entry>
-    <title>搞懂Javascript的this</title>
-    <url>/2023/10/27/%E6%90%9E%E6%87%82Javascript%E7%9A%84this/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在Javascript程式語言中，常面臨到this，但也很常搞不太清楚this指向的對象是誰，而造成程式的一些bug，透過這篇文章來釐清並整理一下this的觀念，以下將用各情境來說明。</p>
-<hr>
-<h2 id="情境1-直接宣告this"><a href="#情境1-直接宣告this" class="headerlink" title="情境1-直接宣告this"></a>情境1-直接宣告this</h2><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.<span class="built_in">log</span>(this) <span class="comment">//Window</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p>會發現無任何包裝，直接印出this，會指向Window物件</p>
-<h2 id="情境2-獨立函式內的this"><a href="#情境2-獨立函式內的this" class="headerlink" title="情境2-獨立函式內的this"></a>情境2-獨立函式內的this</h2><figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">testFn</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(this); <span class="comment">//Window</span></span><br><span class="line">  <span class="built_in">console</span>.<span class="built_in">log</span>(this.innerWidth); <span class="comment">//可以印出視窗的寬度</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>獨立函式內的this也是指向Window物件</p>
-<h2 id="情境3-物件方法內的this"><a href="#情境3-物件方法內的this" class="headerlink" title="情境3-物件方法內的this"></a>情境3-物件方法內的this</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;Fred&quot;</span>,</span><br><span class="line">  <span class="attr">say</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//person物件本身</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>.<span class="property">name</span>); <span class="comment">//Fred</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">person.<span class="title function_">say</span>();</span><br></pre></td></tr></table></figure>
-<p>可以看出物件方法內的this就是物件本身，所以也能因此再找出其他屬性或方法，如name屬性，就印出Fred。<br>這時候我們來實驗一下，把傳統function改為箭頭函式會發生什麼事情呢？</p>
-<figure class="highlight arcade"><table><tr><td class="code"><pre><span class="line">let person = &#123;</span><br><span class="line">  <span class="attr">name</span>: <span class="string">&quot;Fred&quot;</span>,</span><br><span class="line">  <span class="attr">say</span>: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(this); <span class="comment">//Window</span></span><br><span class="line">    <span class="built_in">console</span>.<span class="built_in">log</span>(this.name); <span class="comment">//undefined</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">person.say();</span><br></pre></td></tr></table></figure>
-<p>這時候發現this竟然會印出Window物件，為什麼呢？因為如果用箭頭函式，就沒有自己的this，所以如果在箭頭函式內沒有找到this變數，就會往外找，就直接找到Window物件，所以也因為Window沒有name的屬性，自然this.name就印出undefined了。所以使用箭頭函式時要特別注意一下這個觀念。</p>
-<h2 id="情境4-事件處理function"><a href="#情境4-事件處理function" class="headerlink" title="情境4-事件處理function"></a>情境4-事件處理function</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//document元素</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="string">&quot;我被點到了&quot;</span>;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>this就是觸發事件的對象物件，像上述範例來說，就是document元素。<br>若改為箭頭函式，會發生什麼事呢？</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">addEventListener</span>(<span class="string">&quot;click&quot;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//Window</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">body</span>.<span class="property">innerHTML</span> = <span class="string">&quot;我被點到了&quot;</span>;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>在情境3時我們有提到箭頭函式沒有自己的this，所以函式內的this就是往外找，也找到了Window物件，因此，如果我們點一下畫面會直接報錯Uncaught TypeError: Cannot set properties of undefined (setting ‘innerHTML’)</p>
-<h2 id="情境5-建構函式-Constructor-Function"><a href="#情境5-建構函式-Constructor-Function" class="headerlink" title="情境5-建構函式(Constructor Function)"></a>情境5-建構函式(Constructor Function)</h2><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Person</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="variable language_">this</span>); <span class="comment">//&#123;&#125;</span></span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">name</span> = <span class="string">&quot;Fred&quot;</span>;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">age</span> = <span class="number">18</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> p1 = <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(p1); <span class="comment">//&#123;age: 18,name: &quot;Fred&quot;&#125;</span></span><br></pre></td></tr></table></figure>
-<p>這個範例可以發現第2行的this印出來是Person空白物件，不是一般物件。</p>
-<hr>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>在做專案的時候常常因為追求語法閱讀與簡潔所以常會用到this，但往往沒有搞懂一些概念而造成意外的bug發生，如果再加上箭頭函式的觀念也沒有搞清楚的話，除錯起來也是很辛苦的，所以特別將this用法整理出來，也提醒自己要留意this的指向。</p>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>用for迴圈執行setTimeout方法印出1~5有哪些解法</title>
     <url>/2023/10/27/%E8%B7%91%E8%BF%B4%E5%9C%88%E7%94%A8setTimeout%E5%8D%B0%E5%87%BA1-5%E6%9C%89%E5%93%AA%E4%BA%9B/</url>
     <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我們常用跑迴圈setTimeout來理解var和let的差異，我們知道var的作用域是以function來分界，let是以{}來分界，那現在我們來挑戰不用let，選擇用var來作為解決方案，那該如何解決這個問題呢？</p>
@@ -397,281 +672,6 @@
       </categories>
       <tags>
         <tag>Javascript</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>搞懂Javascript傳值、傳址觀念</title>
-    <url>/2023/11/07/%E6%90%9E%E6%87%82Javascript%E5%82%B3%E5%80%BC%E3%80%81%E5%82%B3%E5%9D%80%E8%A7%80%E5%BF%B5/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>剛開始接觸傳值(pass by value)和傳址(pass by reference)時，常常會搞混，如果觀念似懂非懂的話在開發專案的時候可能會不自覺踩到雷，這一篇就把這個觀念好好記錄下來。</p>
-<h2 id="傳值-pass-by-value"><a href="#傳值-pass-by-value" class="headerlink" title="傳值(pass by value)"></a>傳值(pass by value)</h2><p>string、number、boolean、null、undefined都是<strong>基本型別</strong>，所以會根據pass by value的方式來運作，另外function 也是以此方式運作<br>舉例：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">666</span>;</span><br><span class="line"><span class="keyword">let</span> b = a;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a); <span class="comment">//666</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(b); <span class="comment">//666</span></span><br><span class="line"></span><br><span class="line">a = <span class="number">777</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a); <span class="comment">//777</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(b); <span class="comment">//666</span></span><br></pre></td></tr></table></figure>
-<p>第2行：把a值指派給b變數，所以b值為666<br>第6行：把a值設為777<br>第8行：b值還是本來的值，也就是666</p>
-<h2 id="傳址-pass-by-reference"><a href="#傳址-pass-by-reference" class="headerlink" title="傳址(pass by reference)"></a>傳址(pass by reference)</h2><p>物件裡面的屬性會根據pass by reference來運作</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> son = &#123;</span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> father = son;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line">son.<span class="property">age</span> = <span class="number">40</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 40</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 40</span></span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son === father); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
-<p>第4行：把son值指派給father變數，所以father值為<code>&#123;age: 18&#125;</code><br>第7行：將son的age屬性改為40<br>第9行：father的age屬性值也會變成40<br>第11行：son 完全等於father，因為是<em>共用一份記憶體</em></p>
-<p>陣列也會依據pass by reference來運作</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">let</span> arr2 = arr1;</span><br><span class="line"></span><br><span class="line">arr1.<span class="title function_">push</span>(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(arr2);</span><br></pre></td></tr></table></figure>
-<p>第4行：針對arr1再多push4的值<br>第6行：也改動到了arr2的值</p>
-<p>所以常常在實戰中，習慣複製一份出來，再做相關操作<br>可以在第2行改為<code>let arr2 = arr1.slice(0);</code>或是用ES6擴展符<code>let arr2 = [ ...arr1 ]</code>方式來賦值 (前提裡面的元素不要是物件或陣列)<br>如此一來arr2就不會受到任何影響了</p>
-<h2 id="其他種情況"><a href="#其他種情況" class="headerlink" title="其他種情況"></a>其他種情況</h2><p>如果我們現在是把整個物件取代掉，會發生什麼事呢？</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> son = &#123;</span><br><span class="line">  <span class="attr">age</span>: <span class="number">18</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> father = son;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br><span class="line">son = &#123; <span class="attr">age</span>: <span class="number">5</span> &#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(son.<span class="property">age</span>); <span class="comment">// 5</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(father.<span class="property">age</span>); <span class="comment">// 18</span></span><br></pre></td></tr></table></figure>
-<p>第7行：son賦予整個物件<code>&#123; age: 5 &#125;</code><br>第9行：father的age仍然是18，因為son是重新賦值，會產生一個新的實體參考，所以不會影響到father的age值</p>
-<p>這種情況有人稱它為pass by sharing，也有人會認為說這個其實就是pass by value，我們就不在名詞上面爭議，理解一下概念即可。<br>陣列也會有這樣的情況，如果是賦予一個全新陣列，也會跟本來的獨立，這邊就不額外舉例了。</p>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
-<li>了解pass by value和pass by reference的差異</li>
-<li>僅修改物件或陣列裡面的值以及賦予整個物件或陣列，結果會不同(因記憶體指向的差異)</li>
-</ol>
-]]></content>
-      <categories>
-        <category>Javascript</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>如何整合Vue和.NetCore及部署到IIS上線</title>
-    <url>/2023/11/10/%E5%A6%82%E4%BD%95%E5%B0%87Vue%E5%92%8C-NetCore%E5%8F%8A%E9%83%A8%E7%BD%B2%E5%88%B0IIS%E4%B8%8A%E7%B7%9A/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因為工作關係，團隊考慮將前端改為Vue框架來進行開發，後端則是使用.NetCore，所以建置目標為前端為Vue，後端為.Net6的環境，透過這篇筆記提醒未來的自己以及給需要的人參考，為確保環境能夠部署上線，也會示範部署到IIS的步驟。</p>
-<h2 id="IDE環境版本"><a href="#IDE環境版本" class="headerlink" title="IDE環境版本"></a>IDE環境版本</h2><p>Visual Studio 2022  版本17.7.4</p>
-<blockquote>
-<p>會特別註明版本是因為前幾個版本似乎沒有官方提供的前後端整合選項，所以如果在選擇專案類型沒有看到跟筆者一樣的時候，請留意一下Visual Studio 2022版本<br>在官方還沒有提供前後端整合版本前，已經有高手做的專案模板出來，也是可以使用哦！可以看看： <a href="https://marketplace.visualstudio.com/items?itemName=MakotoAtsu.AspNetCoreViteStarter">AspNetCore_Vite_Starter</a></p>
-</blockquote>
-<p>不過這一篇我們是用官方提供的版本來進行建置，我們繼續往下看</p>
-<h2 id="建立專案"><a href="#建立專案" class="headerlink" title="建立專案"></a>建立專案</h2><ol>
-<li><p>打開Visual Studio 2022，點選<strong>建立新的專案</strong><br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/1.PNG"></p>
-</li>
-<li><p>找到「Vue與ASP.NET Core(預覽)」專案類型，並點選下一步<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/3.PNG"></p>
-</li>
-<li><p>命名專案名稱，名稱自取即可，然後按建立<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/4.PNG"></p>
-</li>
-</ol>
-<h2 id="本地環境更改及運行專案"><a href="#本地環境更改及運行專案" class="headerlink" title="本地環境更改及運行專案"></a>本地環境更改及運行專案</h2><ol>
-<li><p>找到後端專案，也就是<strong>webapi</strong>，點選右鍵，選擇屬性<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/5.PNG"></p>
-</li>
-<li><p>將目標Framework本來為.Net 7.0 改為.Net 6.0，因6.0版本為長期支援版本<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/6.PNG"></p>
-</li>
-<li><p>這時候我們點選上方的<strong>開始</strong>，來跑跑看程式是不是能夠run起來<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/10.PNG"><br>會得到以下錯誤<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/7.PNG"><br>原因是OpenApi版本不相容於.net6.0版本</p>
-</li>
-<li><p>點選<strong>專案</strong>，在點選管理<strong>NuGet套件</strong>，將Microsoft.AspNetCore.OpenApi套件解除安裝<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/9.PNG"></p>
-<p> 做到這邊按下<strong>開始</strong>(如步驟3)<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/10.PNG"><br> 還是會噴錯，發現有處理DateOnly的相關錯誤<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/33.PNG"><br> 原因是因為雖然.Net6雖然有引入DateOnly的類別可以使用，但在轉為Json格式的時候會發現無法轉換問題。</p>
-<blockquote>
-<p>有興趣可以看看這篇文章：<a href="https://storck.io/posts/serializing-net-6-dateonly-to-json/">https://storck.io/posts/serializing-net-6-dateonly-to-json/</a> 裡面有提到解決方式，但我們這篇文章就簡單處理，不要使用DateOnly即可。</p>
-</blockquote>
-</li>
-<li><p>接著我們到後端ewbapi專案，把Controllers內WeatherForecastController.cs打開，</p>
-<p> 把<code>Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index))</code>這行改為<code>Date = DateTime.Now.AddDays(index)</code></p>
-</li>
-</ol>
-<p><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/12.PNG"></p>
-<ol start="6">
-<li><p>接著也到WeatherForecast.cs這個類別檔把DateOnly的類別改為DateTime，這樣才能對應上，否則編譯會報錯<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/14.PNG"></p>
-</li>
-<li><p>按下<strong>開始</strong>(如步驟3)，我們就可以看到Vue前端畫面就成功出來了，並且資料也是從後端來的<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/31.PNG"></p>
-</li>
-</ol>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>為什麼前端的port是5173，為什麼可以打到後端的api呢？</p>
-<ol>
-<li><p>看一下後端webapi專案的Properties&#x2F;launchSettings.json裡面的後端port是多少<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/16.PNG"><br>我們可以看到是7038</p>
-</li>
-<li><p>再來看一下前端vueapp專案的vite.config.js配置<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/17.PNG"><br>可以看到是用Vite內可設定Proxy代理機制讓前端可以打到後端api(也就是說前端起一個Proxy server用代理的方式去打api)<br>如果不這樣設定，後端就要設定Cors然後用不同的port去互做溝通，也能取得相同的效果，不過用Proxy的方式可以順利的處理掉還要寫Cors的問題，也較為簡潔</p>
-</li>
-</ol>
-<h2 id="部署上線"><a href="#部署上線" class="headerlink" title="部署上線"></a>部署上線</h2><p>若要部署上線的話，我們要把前端檔案做編譯打包，所以概念就是由後端host讀取前端靜態檔案</p>
-<blockquote>
-<p>為什麼要打包呢？因為瀏覽器是看不懂vue檔的，所以要用前端打包工具(像我們這邊是用Vite)來做打包</p>
-</blockquote>
-<ol>
-<li><p>到後端webapi專案的Programs.cs檔內加上，放在原有if的判斷下方</p>
-<figure class="highlight cs"><table><tr><td class="code"><pre><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    app.UseDefaultFiles();</span><br><span class="line">    app.UseStaticFiles();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如以下<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/18.PNG"></p>
-</li>
-<li><p>將後端webapi專案點選右鍵，並且按下<strong>發佈</strong><br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/19.PNG"></p>
-<p> 選擇<strong>資料夾</strong>，並點選<strong>下一步</strong><br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/20.PNG"></p>
-<p> 先在電腦某處創好一個空資料夾(資料夾可自行取名)，然後<strong>資料夾位置</strong>選擇它，設置好後按下<strong>完成</strong><br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/21.PNG"></p>
-<p> 繼續以下步驟<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/22.PNG"><br> 點選發佈<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/24.PNG"></p>
-</li>
-<li><p>開啟電腦上的IIS管理介面，左邊選單針對<strong>站台</strong>點選右鍵，新增網站<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/25.PNG"></p>
-</li>
-<li><p>設置網站資訊，取個站台名稱(自行取名即可)，也選擇剛剛後端發佈程式的資料夾(參考第2步驟)，連接埠也設置一個你目前沒有在使用的port，按下確定<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/26.PNG"></p>
-<p> 還沒完成喔，請等等</p>
-</li>
-<li><p>接下來回到Visual Studio開啟<strong>開發人員PowerShell</strong>，輸入以下指令<br>移動到前端資料夾</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd vueapp</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
-<p>打包出一個資料夾，裡面都是打包後的靜態檔案，如下圖<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/27.PNG"></p>
-</li>
-<li><p>複製剛剛創建出來的dist資料夾到發佈站台的資料夾<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/28.PNG"><br>並改名為<strong>wwwroot</strong>，因為這個名稱為靜態檔案的入口<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/29.PNG"></p>
-</li>
-<li><p>到瀏覽器上面輸入<a href="http://localhost:7688/">http://localhost:7688</a>  (port會根據在第4步驟設定會有所不同) ，順利呈現頁面，並且也能看到後端回來的資料<br><img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/30.PNG"></p>
-<p> 如出現ANCM 500.31的錯誤頁面，請下載<a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0">.NET6.0 SDK</a><strong>ASP.NET Core Runtime</strong>，下載Hosting Bundle並安裝即可<br> <img src="/img/%E5%BB%BA%E7%AB%8Bwebapi&Vue%E6%88%AA%E5%9C%96/32.PNG"></p>
-</li>
-</ol>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><ol>
-<li>透過這個建置流程讓我更了解建置環境的流程。</li>
-<li>官方提供的範例，打包工具是使用Vite，算是這幾年出現的打包新星，速度非常的快，有別於傳統Vue CLI，所以建置Vue前端起來可以說是相當快意！</li>
-<li>本來沒有官方的版本，建置起來有點痛苦，容易漏東漏西，容易造成無法順利建置的問題。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>系統整合</category>
-      </categories>
-      <tags>
-        <tag>Vue</tag>
-        <tag>.NetCore</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>如何在Azure複製現有VM，達成快速建置VM目的</title>
-    <url>/2024/02/27/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因為工作需要，需要建立多台虛擬機器(以下簡稱VM)，其內容物都是一樣的VM(OS、已有的程式…)，從零開始建立實在太慢，搜尋一些方式後整理出我最後解決方案及建立步驟說明。</p>
-<p>步驟順序大致為 1. 從硬碟建立快照 2. 以此快照建立硬碟 3. 以此磁碟建立VM</p>
-<h2 id="作法"><a href="#作法" class="headerlink" title="作法"></a>作法</h2><ol>
-<li><p>從硬碟建立快照<br> (1) 於Azure平台上點選虛擬機器服務<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/1.PNG"><br> (2) 呈現出目前所有的VM，我們這次打算進行AP-01這台VM的快速複製<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/2.PNG"><br> (3) 進到AP-01後，點選左方<strong>磁碟</strong>(註：此VM停不停止運作都沒關係)<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/3.PNG"><br> (4) 點選磁碟名稱<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/4.PNG"><br> (5) 進入該磁碟頁面後，點選<strong>建立快照集</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/5.PNG"><br> (6) 為此快照取一個名稱，其餘用預設值就好，並按下檢閱+建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/6.PNG"><br> (7) 完成建立快照！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/7.PNG"></p>
-</li>
-<li><p>以此快照建立硬碟<br> (1) 點選<strong>建立磁碟</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/8.PNG"><br> (2) 為此磁碟取一個名稱，其餘用預設值就好，並按下檢閱+建立，再按下建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/9.PNG"><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/11.PNG"><br> (3) 完成建立磁碟！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/12.PNG"></p>
-</li>
-<li><p>以此磁碟建立VM<br> (1) 點選<strong>建立VM</strong><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/13.PNG"><br> (2) 為此VM取一個名稱，其餘用預設值就好，並按下檢閱+建立，再按下建立<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/14.PNG"><br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/15.PNG"><br> (3) 完成建立VM！建立完成後點選前往資源<br> <img src="/img/%E5%A6%82%E4%BD%95%E5%9C%A8Azure%E8%A4%87%E8%A3%BD%E7%8F%BE%E6%9C%89VM%EF%BC%8C%E9%81%94%E6%88%90%E5%BF%AB%E9%80%9F%E5%BB%BA%E7%BD%AEVM%E7%9B%AE%E7%9A%84/16.PNG"></p>
-</li>
-</ol>
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>反覆透過以上方式可以建立多台VM(快照建立一次即可，從新增硬碟步驟開始實作即可)，不用從零實作VM架設，實在很方便！紀錄建置相關步驟，提醒有同樣需求的人和未來的自己有相同需求時，可以快速建立VM。</p>
-]]></content>
-      <categories>
-        <category>Azure</category>
-      </categories>
-      <tags>
-        <tag>Azure</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>學習Firebase Firestore(Admin SDK語法)</title>
-    <url>/2024/03/06/FirebaseAdminSDK%E5%8F%8A8%E8%AA%9E%E6%B3%95/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><ul>
-<li>繼上一篇v9語法，實戰我比較少會使用，接下來紀錄一下較常用的Admin SDK方式操作資料庫！</li>
-<li>此為Admin SDK(同前端v8語法)，這篇著重在Admin SDK firestore(後端)語法介紹，一般也建議在後端與資料庫溝通，安全性比較足夠。</li>
-</ul>
-<p>留意：</p>
-<ul>
-<li>須先至 專案設定&gt;&gt;服務帳戶，選擇Node.js，並按下<strong>產生新的私密金鑰</strong>，再按下<strong>產生金鑰</strong>，下載json檔案(將其命名為serviceAccountKey.json)存放到專案內<br><img src="/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/1.PNG"><br><img src="/img/firebaseAdminSDK%E8%B3%87%E6%96%99%E5%BA%AB%E8%AA%9E%E6%B3%95%E6%96%87%E7%AB%A0/2.PNG"></li>
-<li>初始化資料庫，並取得db物件  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; initializeApp, cert &#125; <span class="keyword">from</span> <span class="string">&quot;firebase-admin/app&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; getFirestore &#125; <span class="keyword">from</span> <span class="string">&quot;firebase-admin/firestore&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> serviceAccount <span class="keyword">from</span> <span class="string">&quot;./serviceAccountKey.json&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">initializeApp</span>(&#123;</span><br><span class="line">    <span class="attr">credential</span>: <span class="title function_">cert</span>(serviceAccount),</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> db = <span class="title function_">getFirestore</span>();</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="分為CRUD方式記錄"><a href="#分為CRUD方式記錄" class="headerlink" title="分為CRUD方式記錄"></a>分為CRUD方式記錄</h2><ul>
-<li>C-(Create)</li>
-<li>R-(Read)</li>
-<li>U-(Update)</li>
-<li>D-(Delete)</li>
-</ul>
-<h1 id="C-Create-創建資料"><a href="#C-Create-創建資料" class="headerlink" title="C-(Create)創建資料"></a>C-(Create)創建資料</h1><ul>
-<li>創建文件(使用set，可命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料)</span><br></pre></td></tr></table></figure>
-如果文件不存在則創建，若存在則整個物件覆蓋；若不想整個物件覆蓋，只要修改則要加上參數物件{ merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;LA&#x27;</span>).<span class="title function_">set</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;Los Angeles&#x27;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&#x27;CA&#x27;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&#x27;USA&#x27;</span></span><br><span class="line">    &#125;, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
-<li>創建文件(使用add，Firebase自動命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">add</span>(物件資料);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">add</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&#x27;Tokyo&#x27;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&#x27;Japan&#x27;</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;創建文件的id: &#x27;</span>, res.<span class="property">id</span>);</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-可以取得創建文件的id</li>
-</ul>
-<h1 id="R-Read-查詢資料"><a href="#R-Read-查詢資料" class="headerlink" title="R-(Read)查詢資料"></a>R-(Read)查詢資料</h1><ul>
-<li><p>查詢文件<br><strong>語法</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">get</span>();</span><br></pre></td></tr></table></figure>
-<p><strong>範例</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> doc = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;SF&#x27;</span>).<span class="title function_">get</span>();</span><br><span class="line">    <span class="keyword">if</span> (doc.<span class="property">exists</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;文件資料&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;查無文件&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-<p>可以使用.data()，取得資料</p>
-</li>
-<li><p>從集合查詢多個文件<br><strong>語法</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> citiesRef = db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> snapshot = <span class="keyword">await</span> citiesRef.<span class="title function_">get</span>();</span><br></pre></td></tr></table></figure>
-<p>如果有條件，加在.get()前面，例如變成<code>const snapshot = await citiesRef.where(&#39;欄位名&#39;, &#39;==&#39;, true).get();</code><br><strong>範例</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> citiesRef = db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> snapshot = <span class="keyword">await</span> citiesRef.<span class="title function_">where</span>(<span class="string">&#x27;capital&#x27;</span>, <span class="string">&#x27;==&#x27;</span>, <span class="literal">true</span>).<span class="title function_">get</span>();</span><br><span class="line">    <span class="keyword">if</span> (snapshot.<span class="property">empty</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;No matching documents.&#x27;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    snapshot.<span class="title function_">forEach</span>(<span class="function"><span class="params">doc</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&#x27;=&gt;&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-<p>使用for…of或是傳統for，必須針對snapshot再加上.docs跑迴圏(如使用forEach則直接使用snapshot)。最後再使用.data()，取得資料。<br>例如</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">const</span> doc <span class="keyword">of</span> snapshot.<span class="property">docs</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&#x27;=&gt;&#x27;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h1 id="U-Update-更新資料"><a href="#U-Update-更新資料" class="headerlink" title="U-(Update)更新資料"></a>U-(Update)更新資料</h1><ul>
-<li>更新文件(使用update，非整個物件覆蓋)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">update</span>(物件資料);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;LA&#x27;</span>).<span class="title function_">update</span>(&#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;new country!&quot;</span>,</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
-<li>更新文件(使用set，替換全部文件內容)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料);</span><br></pre></td></tr></table></figure>
-若不全部替換，務必加上, { merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">set</span>(物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><br>  同本文<strong>創建文件</strong>set方法</li>
-</ul>
-<p><strong>*小提醒：使用update等同於set加上{ merge: true }，效果完全相同</strong></p>
-<h1 id="D-Delete-刪除文件"><a href="#D-Delete-刪除文件" class="headerlink" title="D-(Delete)刪除文件"></a>D-(Delete)刪除文件</h1><p><strong>語法</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;集合名&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;文件名&#x27;</span>).<span class="title function_">delete</span>();</span><br></pre></td></tr></table></figure>
-<p><strong>範例</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> db.<span class="title function_">collection</span>(<span class="string">&#x27;cities&#x27;</span>).<span class="title function_">doc</span>(<span class="string">&#x27;DC&#x27;</span>).<span class="title function_">delete</span>();</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>透過紀錄語法，讓以後的自己方便查找資訊，常常會透過後端與資料庫溝通的方式，取得資料之後再傳遞給前端，這樣作法相比上一篇v9作法更安全！</p>
-<blockquote>
-<p>參考資料<br><a href="https://firebase.google.com/docs/firestore?hl=zh-tw">Firebase官方文件 </a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Firebase</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-        <tag>Firebase</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>學習Firebase Firestore語法(v9)</title>
-    <url>/2024/03/06/%E5%AD%B8%E7%BF%92Firebase%E7%9A%84Firestore%E8%AA%9E%E6%B3%95(v9)/</url>
-    <content><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！</p>
-<p>留意：</p>
-<ul>
-<li><p>v9版本就是應用到Firebase文件內的Web modular API，也就是利用前端操作資料庫，與Admin SDK和v8版本(Web namespaced API)語法存在一些差異。</p>
-</li>
-<li><p>因為是前端操作資料庫，需要到專案設定&gt;&gt;一般設定，新增應用程式，選擇Web版本。並且要把Firestore Database裡的規則更改為以下</p>
-  <figure class="highlight fsharp"><table><tr><td class="code"><pre><span class="line">rules_version <span class="operator">=</span> <span class="string">&#x27;2&#x27;</span>;</span><br><span class="line"></span><br><span class="line">service cloud.<span class="keyword">firestore</span> &#123;</span><br><span class="line">    <span class="keyword">match</span> <span class="operator">/</span>databases<span class="operator">/</span>&#123;database&#125;<span class="operator">/</span><span class="keyword">documents</span> &#123;</span><br><span class="line">        <span class="keyword">match</span> <span class="operator">/</span>&#123;document<span class="operator">=**</span>&#125; &#123;</span><br><span class="line">            allow read, write<span class="operator">:</span> <span class="keyword">if</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>  這樣才能讀寫資料庫，否則無權限會出現***Uncaught (in promise) FirebaseError: Missing or insufficient permissions.***的錯誤。<br>  但要留意，上述寫法代表讀寫全部開放，所以不安全，請以實際情況調整之。</p>
-</li>
-<li><p>所有的動作都是非同步，所以在Javascript內必須做非同步處理，以下皆使用async&#x2F;await示範！</p>
-</li>
-<li><p>初始化資料庫，並取得db物件</p>
-  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; initializeApp &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/app&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; getFirestore &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> firebaseConfig = &#123;</span><br><span class="line">    <span class="attr">apiKey</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">authDomain</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">projectId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">storageBucket</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">messagingSenderId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">appId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">initializeApp</span>(firebaseConfig);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> db = <span class="title function_">getFirestore</span>(app);</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ul>
-<h2 id="分為CRUD方式記錄"><a href="#分為CRUD方式記錄" class="headerlink" title="分為CRUD方式記錄"></a>分為CRUD方式記錄</h2><ul>
-<li>C-(Create)</li>
-<li>R-(Read)</li>
-<li>U-(Update)</li>
-<li>D-(Delete)</li>
-</ul>
-<h1 id="C-Create-創建資料"><a href="#C-Create-創建資料" class="headerlink" title="C-(Create)創建資料"></a>C-(Create)創建資料</h1><ul>
-<li>創建文件(使用setDoc，可命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
-如果文件不存在則創建，若存在則整個物件覆蓋；若不想整個物件覆蓋，只要修改則要加上參數物件{ merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, setDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>; </span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;USA&quot;</span></span><br><span class="line">    &#125;, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
-<li>創建文件(使用addDoc，Firebase自動命名文件名)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">addDoc</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;集合名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; collection, addDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>; </span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> docRef = <span class="keyword">await</span> <span class="title function_">addDoc</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;cities&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Tokyo&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;Japan&quot;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Document written with ID: &quot;</span>, docRef.<span class="property">id</span>);</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-可以取得創建文件的id</li>
-</ul>
-<h1 id="R-Read-查詢資料"><a href="#R-Read-查詢資料" class="headerlink" title="R-(Read)查詢資料"></a>R-(Read)查詢資料</h1><ul>
-<li>查詢文件<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">getDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>))</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, getDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> docSnap = <span class="keyword">await</span> <span class="title function_">getDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>));</span><br><span class="line">    <span class="keyword">if</span> (docSnap.<span class="title function_">exists</span>()) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Document data:&quot;</span>, docSnap.<span class="title function_">data</span>());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;No such document!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-使用.data()，取得資料</li>
-<li>從集合查詢多個文件<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> q = <span class="title function_">query</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;集合名&quot;</span>));</span><br><span class="line"><span class="keyword">const</span> querySnapshot = <span class="keyword">await</span> <span class="title function_">getDocs</span>(q);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; collection, query, where, getDocs &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> q = <span class="title function_">query</span>(<span class="title function_">collection</span>(db, <span class="string">&quot;cities&quot;</span>));</span><br><span class="line">    <span class="keyword">const</span> querySnapshot = <span class="keyword">await</span> <span class="title function_">getDocs</span>(q);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> doc <span class="keyword">of</span> querySnapshot.<span class="property">docs</span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(doc.<span class="property">id</span>, <span class="string">&quot; =&gt; &quot;</span>, doc.<span class="title function_">data</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-使用for…of，必須針對querySnapshot再加上.docs跑迴圏(如使用forEach則直接使用querySnapshot)。最後再使用.data()，取得資料。</li>
-</ul>
-<h1 id="U-Update-更新資料"><a href="#U-Update-更新資料" class="headerlink" title="U-(Update)更新資料"></a>U-(Update)更新資料</h1><ul>
-<li>更新文件(使用updateDoc，非整個物件覆蓋)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">updateDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, updateDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">updateDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>), &#123;</span><br><span class="line">        <span class="attr">name</span>: <span class="string">&quot;Los Angeles&quot;</span>,</span><br><span class="line">        <span class="attr">state</span>: <span class="string">&quot;CA&quot;</span>,</span><br><span class="line">        <span class="attr">country</span>: <span class="string">&quot;new country!&quot;</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></li>
-<li>更新文件(使用setDoc，整個物件覆蓋全部文件內容)<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料);</span><br></pre></td></tr></table></figure>
-若不覆蓋，務必加上, { merge: true }<br><strong>語法</strong><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">setDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>), 物件資料, &#123; <span class="attr">merge</span>: <span class="literal">true</span> &#125;);</span><br></pre></td></tr></table></figure>
-<strong>範例</strong><br>  同本文<strong>創建文件</strong>setDoc方法</li>
-</ul>
-<p><strong>*小提醒：使用updateDoc等同於setDoc加上{ merge: true }，效果完全相同</strong></p>
-<h1 id="D-Delete-刪除文件"><a href="#D-Delete-刪除文件" class="headerlink" title="D-(Delete)刪除文件"></a>D-(Delete)刪除文件</h1><p><strong>語法</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">deleteDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;集合名&quot;</span>, <span class="string">&quot;文件名&quot;</span>));</span><br></pre></td></tr></table></figure>
-<p><strong>範例</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; doc, deleteDoc &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"></span><br><span class="line">(<span class="keyword">async</span> () =&gt; &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">deleteDoc</span>(<span class="title function_">doc</span>(db, <span class="string">&quot;cities&quot;</span>, <span class="string">&quot;LA&quot;</span>));</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
-
-<h2 id="小結"><a href="#小結" class="headerlink" title="小結"></a>小結</h2><p>透過紀錄語法，讓以後的自己方便查找資訊，前端撈取資料雖然方便，但有時候要留意安全性問題！</p>
-<blockquote>
-<p>參考資料<br><a href="https://firebase.google.com/docs/firestore?hl=zh-tw">Firebase官方文件 </a></p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Firebase</category>
-      </categories>
-      <tags>
-        <tag>Javascript</tag>
-        <tag>Firebase</tag>
       </tags>
   </entry>
 </search>
