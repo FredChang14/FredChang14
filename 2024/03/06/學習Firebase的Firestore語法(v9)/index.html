@@ -36,7 +36,7 @@
 <meta property="og:description" content="因覺得開發一些部落格網站不太需要複雜的關聯式資料庫來存取使用者資料，所以學習一套NoSQL的資料庫，存取方式也是類似JSON的格式，所以學習起來十分快意。因為考慮到常常使用到一些常用的CRUD語法，所以寫一篇文件記錄起來，方便自己能夠快速查找！">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2024-03-06T05:06:59.000Z">
-<meta property="article:modified_time" content="2024-03-22T06:39:10.339Z">
+<meta property="article:modified_time" content="2024-03-22T06:41:32.931Z">
 <meta property="article:author" content="Fred Chang">
 <meta property="article:tag" content="Firebase">
 <meta property="article:tag" content="Javascript">
@@ -283,8 +283,8 @@
 <li><p>初始化資料庫，並取得db物件</p>
   <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; initializeApp &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/app&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; getFirestore &#125; <span class="keyword">from</span> <span class="string">&quot;firebase/firestore&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> firebaseConfig = &#123;</span><br><span class="line">    <span class="attr">apiKey</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">authDomain</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">projectId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">storageBucket</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">messagingSenderId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">    <span class="attr">appId</span>: <span class="string">&quot;xxxxxxx&quot;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="title function_">initializeApp</span>(firebaseConfig);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> db = <span class="title function_">getFirestore</span>(app);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-
-<p>  接下來分為CRUD方式介紹</p>
+</li>
+<li><p>接下來以CRUD順序介紹</p>
 <ul>
 <li>C-(Create)</li>
 <li>R-(Read)</li>
